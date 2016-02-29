@@ -1,0 +1,1 @@
+angular.module('peridot', ['peridotController', 'sidebarcontroller']);

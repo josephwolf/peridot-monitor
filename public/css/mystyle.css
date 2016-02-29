@@ -1,0 +1,89 @@
+
+body {
+	background-color: #2F3030;
+	color: #D7DBDE;
+}
+
+.crowdmix-logo {
+	max-height: 120pt !important;
+	display: block;
+	margin: 20pt auto;
+}
+
+.main-view {
+	padding-top: 5pt;
+	left: 0;
+	right: 0;
+}
+
+.text-box {
+	border-radius: 5px;
+	border: none;
+	background-color: #F0F0F0;
+	height: 20pt;
+	padding-left: 5pt;
+	margin-bottom: 5pt;
+	min-width: 200pt;
+}
+
+.button-container {
+	margin-bottom: 10pt;
+}
+
+.success {
+	border: 2px black solid;
+	min-height: 70pt;
+	border-radius: 5px;
+	color: #2F3030;
+	background-color: #38E876;
+}
+
+.failure {
+	color: #D7DBDE;
+	background-color: #D63E3E;
+}
+
+.pending {
+	color: #D7DBDE;
+	background-color: #838587;
+}
+
+.sidebar {
+    position : absolute;
+    top : 0;
+    bottom: 0;
+    left : -250pt;
+    transition : 100ms left;
+    z-index: 2;
+    background-color: #616363;
+    padding: 10pt;
+    min-width: 220pt;
+}
+
+#navigation-toggle {
+        position : absolute;
+        left : 220pt;
+        background-color: #5A98D6;
+        color : white;
+        padding : 5px;
+        border-radius: 0 5px 5px 0;
+        z-index: 1;
+        padding-left: 35pt;
+}
+
+.show {
+    left : 0;
+}
+
+.constrict {
+	margin-left: 220pt;
+}
+
+.navigation {
+	padding-left: 0;
+}
+
+h1 {
+	font-size: 45pt;
+    margin-left: 25pt;
+}
