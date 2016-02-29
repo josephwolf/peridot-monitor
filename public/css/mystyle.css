@@ -30,20 +30,33 @@ body {
 	margin-bottom: 10pt;
 }
 
-.success {
+.component-box {
 	border: 2px black solid;
-	min-height: 70pt;
+	min-height: 75pt;
 	border-radius: 5px;
+}
+
+.good {
 	color: #2F3030;
 	background-color: #38E876;
 }
 
-.failure {
+.warning {
+	color: #2F3030;
+	background-color: #E8E838;
+}
+
+.bad {
+	color: #2F3030;
+	background-color: #E89638;
+}
+
+.critical {
 	color: #D7DBDE;
 	background-color: #D63E3E;
 }
 
-.pending {
+.inaccessable {
 	color: #D7DBDE;
 	background-color: #838587;
 }

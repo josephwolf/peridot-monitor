@@ -45,19 +45,23 @@
 				<div class="builds-container" constrict-directive="state">
 					<h1>Peridot</h1>
 					<div>
-						<div class="col-md-{{gridColumns}}"></div> <!-- Upper left corner of rid -->
+						<div class="col-md-{{gridColumns}} component-box"></div> <!-- Upper left corner of rid -->
 						<div ng-repeat="environment in environmentNames">
-							<div class="col-md-{{gridColumns}}">{{environment}}</div>
+							<div class="col-md-{{gridColumns}} component-box">{{environment}}</div>
 						</div>
 					</div>
 
 
  					<div ng-repeat="component in enrichedComponents track by $index">
 
- 						<div class="col-md-{{gridColumns}} pending">{{component.name}}</div>
+ 						<div class="col-md-{{gridColumns}} component-box">{{component.name}}</div>
 
  						<div ng-repeat="environment in component.environments">
- 							<div class="col-md-{{gridColumns}} success" ng-class="{'pending' : environment.version == 'Not Found' || environment.version == '' || environment.version == 'Bad Gateway'}">
+ 							<div class="col-md-{{gridColumns}} component-box good" ng-class="{
+ 																					'inaccessable' : environment.version == 'Not Found' || environment.version == '' || environment.version == 'Bad Gateway' || environment.version == 'Unable to retrieve version information',
+ 																					'warning' : (component.environments[0].version - environment.version) > 2,
+ 																					'bad' : (component.environments[0].version - environment.version) > 4,
+ 																					'critical' : (component.environments[0].version - environment.version) > 6}">
  								<p>environment: {{environment.name}}</p>
  								<p>component: {{component.name}}</p>
  								<p>version: {{environment.version}}</p>

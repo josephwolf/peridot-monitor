@@ -33,7 +33,6 @@ module.exports = function(app) {
 	var componentNames = ["profiles",
 						  "feeds",
 						  "matching",
-						  "media",
 						  "media-access",
 						  "music-search",
 						  "listens-write",
@@ -63,9 +62,7 @@ module.exports = function(app) {
 						  "recent-listens-read",
 						  "recent-listens-view-materializer",
 						  "abuse-reporting",
-						  "kafka-event-monitor",
-						  "fake-facebook",
-						  "matchingstub"]
+						  "kafka-event-monitor"]
 
 	var enrichedComponents = []
 
