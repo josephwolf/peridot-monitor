@@ -77,6 +77,7 @@ h1 {
 }
 
 .component-box {
+	padding-top: 10px;
 	margin-bottom: 10pt;
 	border: 3px #2F3030 solid;
 	height: 80pt;
@@ -91,6 +92,7 @@ h1 {
 }
 
 .component-name-box {
+	padding-top: 0;
 	line-height: 80pt;
 }
 
@@ -166,4 +168,8 @@ h1 {
   display: inline-block;
   vertical-align: middle;
   line-height: normal; 
+}
+
+.warning-text {
+	font-size: 10pt;
 }

@@ -62,11 +62,12 @@
 			 						'inaccessable' : environment.error != '',
 			 						'warning' : (component.environments[0].version - environment.version) > 2,
 			 						'bad' : (component.environments[0].version - environment.version) > 4,
-			 						'critical' : (component.environments[0].version - environment.version) > 6}">
+			 						'critical' : (component.environments[0].version - environment.version) > 6 || (component.environments[0].version - environment.version) < 0}">
 			 						<div class="component-box-inner">
 			 							<div ng-show="environment.error == ''" class="version-text">
 			 								Version: {{environment.version}}
-			 								<div class="last-version-text">{{component.environments[0].version - environment.version}} version(s) from {{component.environments[0].name}}</div>
+			 								<div ng-hide="component.environments[0].name == environment.name" class="last-version-text">{{component.environments[0].version - environment.version}} versions from {{component.environments[0].name}}</div>
+			 								<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 			 							</div>
 			 							<div ng-show="environment.error != ''">
 			 								<div class="error-text">Error: {{environment.error}}</div>
