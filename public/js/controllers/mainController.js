@@ -2,6 +2,18 @@ var module = angular.module('peridotController', [])
 
 module.controller('mainController', ['$scope', '$q', '$interval', '$http', function($scope, $q, $interval, $http) {
 
+	$(document).ready(function() {
+    	var aboveHeight = $('header').outerHeight();
+
+    	$(window).scroll(function(){
+    	    if ($(window).scrollTop() > aboveHeight){
+    	        $('nav').addClass('fixed').css('top','0').next().css('padding-top','60px');
+    	    } else {
+    	        $('nav').removeClass('fixed').next().css('padding-top','0')
+    	    }
+    	});
+    });
+
 	var getEnvironmentNames = function() {
 		return $http.get('/environments')
 			.then(function(response) {
@@ -20,7 +32,6 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', funct
 	var getEnrichedComponents = function() {
 		return $http.get('/enrichedcomponents')
 			.then(function(response) {
-				// console.log(response.data)
 				$scope.enrichedComponents = response.data;
 			});
 	}

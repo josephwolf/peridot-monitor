@@ -1,7 +1,53 @@
+@font-face {
+	font-family: 'Montserrat';
+	src: url('../resources/montserrat/Montserrat-Regular.otf');
+	font-weight: bold;
+}
 
 body {
+	font-family: 'Montserrat';
+	font-size: 20pt;
 	background-color: #2F3030;
 	color: #D7DBDE;
+}
+
+header {
+	text-align:center;
+}
+
+nav {
+	z-index: 3;
+	width: 100%;
+	line-height:50px;
+	position: relative;
+}
+
+h1 {
+	font-size: 45pt;
+    margin-left: 25pt;
+}
+
+#navigation-toggle {
+    position : absolute;
+    left : 220pt;
+    background-color: #5A98D6;
+    color : white;
+    padding : 5px;
+    border-radius: 0 5px 5px 0;
+    z-index: 1;
+    padding-left: 35pt;
+}
+
+#wrapper {
+	margin: 0 auto;
+}
+
+#content {
+	height: 1500px; /* presetting the height */
+}
+
+.fixed {
+    position:fixed;
 }
 
 .crowdmix-logo {
@@ -31,9 +77,28 @@ body {
 }
 
 .component-box {
-	border: 2px black solid;
-	min-height: 75pt;
+	margin-bottom: 10pt;
+	border: 3px #2F3030 solid;
+	height: 80pt;
 	border-radius: 5px;
+	line-height: normal;
+	text-align: center;
+	overflow: hidden;
+}
+
+.component-box-inner {
+	text-overflow: ellipsis;
+}
+
+.component-name-box {
+	line-height: 80pt;
+}
+
+.environment-name-box {
+	background-color: #2F3030;
+	text-align: center;
+	font-size: 30pt;
+	height: 40pt;
 }
 
 .good {
@@ -67,21 +132,10 @@ body {
     bottom: 0;
     left : -250pt;
     transition : 100ms left;
-    z-index: 2;
+    z-index: 10;
     background-color: #616363;
     padding: 10pt;
     min-width: 220pt;
-}
-
-#navigation-toggle {
-        position : absolute;
-        left : 220pt;
-        background-color: #5A98D6;
-        color : white;
-        padding : 5px;
-        border-radius: 0 5px 5px 0;
-        z-index: 1;
-        padding-left: 35pt;
 }
 
 .show {
@@ -96,7 +150,20 @@ body {
 	padding-left: 0;
 }
 
-h1 {
-	font-size: 45pt;
-    margin-left: 25pt;
+.error-text {
+	font-size: 16pt;
+}
+
+.last-version-text {
+	font-size: 12pt;
+}
+
+.version-text {
+	font-size: 20pt;
+}
+
+.component-name-text {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal; 
 }

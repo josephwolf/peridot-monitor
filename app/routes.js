@@ -24,11 +24,11 @@ module.exports = function(app) {
 		}
 	}
 
-	var environmentNames = ["ci",
-							"performance",
-							"qa",
-							"staging",
-							"production"]
+	var environmentNames = ["CI",
+							"Performance",
+							"QA",
+							"Staging",
+							"Production"]
 
 	var componentNames = ["profiles",
 						  "feeds",
@@ -79,7 +79,7 @@ module.exports = function(app) {
 	}
 
 	var getVersion = function(environment, componentName) {
-		if (environment == "production") { httpsOptions.host = 'api.crwd.mx' } 
+		if (environment == "Production") { httpsOptions.host = 'api.crwd.mx' } 
 		else { httpsOptions.host = environment + '.dev.crwd.mx' }
 		httpsOptions.path = '/' + componentName + '/meta'
 
@@ -92,10 +92,20 @@ module.exports = function(app) {
 				var enrichedComponent = enrichedComponents[findComponent(componentName)]
 				var unenrichedEnvironment = enrichedComponent.environments[findEnvironment(environment, enrichedComponent)]
 
-				if (response.statusCode == 200) { unenrichedEnvironment.version = JSON.parse(Buffer.concat(bodyChunks)).version } 
+				if (response.statusCode == 200) {
+					var responseData = JSON.parse(Buffer.concat(bodyChunks)).version
+
+					if (responseData == 'Unable to retrieve version information') {
+						if (!unenrichedEnvironment.version) { unenrichedEnvironment.version = "No known last version" }
+						unenrichedEnvironment.error = responseData; 
+					}
+					else { unenrichedEnvironment.version = responseData; unenrichedEnvironment.error = "" }
+				}
+
 				else {
-					if (response.statusCode == 502) { unenrichedEnvironment.version = "Bad Gateway" }
-					if (response.statusCode == 404) { unenrichedEnvironment.version = "Not Found" }
+					if (!unenrichedEnvironment.version) { unenrichedEnvironment.version = "No known last version" }
+					if (response.statusCode == 502) { unenrichedEnvironment.error = "Bad Gateway" }
+					if (response.statusCode == 404) { unenrichedEnvironment.error = "Not Found" }
 				}
 			})
 		})
@@ -110,7 +120,7 @@ module.exports = function(app) {
 			enrichedComponent.environments[i] = {"name": environmentNames[i], "version": ''}
 			getVersion(environmentNames[i], componentName)
 		}
-		if (!findComponent(componentName)) {enrichedComponents.push(enrichedComponent)}
+		if (typeof findComponent(componentName) != 'number') {enrichedComponents.push(enrichedComponent)}
 	}
 
 	var enrichComponents = function() {
