@@ -48,6 +48,8 @@ h1 {
 
 .fixed {
     position:fixed;
+    padding: 0 10pt;
+    right: 0;
 }
 
 .crowdmix-logo {
