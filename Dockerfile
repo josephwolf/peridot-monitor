@@ -1,12 +1,9 @@
-FROM centos:centos6
-
-RUN yum install -y epel-release
-RUN yum install -y node.js npm
+FROM mhart/alpine-node:5.7.0
 
 COPY package.json /src/package.json
-RUN cd /src; npm install
-
 COPY . /src
+
+RUN cd /src; npm install
 
 EXPOSE 2501
 CMD ["node", "/src/app.js"]
