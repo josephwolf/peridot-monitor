@@ -95,15 +95,21 @@ module.exports = function(app) {
 				if (response.statusCode == 200) {
 					var responseData = JSON.parse(Buffer.concat(bodyChunks)).version
 
-					if (responseData == 'Unable to retrieve version information') {
-						if (!unenrichedEnvironment.version) { unenrichedEnvironment.version = "No known last version" }
-						unenrichedEnvironment.error = responseData; 
+					if (unenrichedEnvironment.version != responseData) {
+						if (unenrichedEnvironment.version != "Unavailable") { unenrichedEnvironment.lastVersion = unenrichedEnvironment.version }
+						if (responseData == 'Unable to retrieve version information') { unenrichedEnvironment.error = responseData } 
+						else {
+							unenrichedEnvironment.version = responseData;
+							unenrichedEnvironment.error = ''
+						}
 					}
-					else { unenrichedEnvironment.version = responseData; unenrichedEnvironment.error = "" }
 				}
 
 				else {
-					if (!unenrichedEnvironment.version) { unenrichedEnvironment.version = "No known last version" }
+					if (unenrichedEnvironment.version != "Unavailable") { 
+						unenrichedEnvironment.lastVersion = unenrichedEnvironment.version; 
+						unenrichedEnvironment.version = "Unavailable" 
+					} 
 					if (response.statusCode == 502) { unenrichedEnvironment.error = "Bad Gateway" }
 					if (response.statusCode == 404) { unenrichedEnvironment.error = "Not Found" }
 				}
@@ -117,10 +123,10 @@ module.exports = function(app) {
 	var enrichComponent = function(componentName) {
 		var enrichedComponent = {"name": componentName, "environments": []}
 		for (var i = environmentNames.length - 1; i >= 0; i--) {
-			enrichedComponent.environments[i] = {"name": environmentNames[i], "version": ''}
+			enrichedComponent.environments[i] = {"name": environmentNames[i], "version": "Unavailable", "lastVersion": "No known last version", "error": ''}
 			getVersion(environmentNames[i], componentName)
 		}
-		if (typeof findComponent(componentName) != 'number') {enrichedComponents.push(enrichedComponent)}
+		if (typeof findComponent(componentName) != 'number') {enrichedComponents.unshift(enrichedComponent)}
 	}
 
 	var enrichComponents = function() {

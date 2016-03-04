@@ -14,6 +14,14 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', funct
     	});
     });
 
+    $scope.checkboxes = [];
+
+    var constructComponentCheckboxes = function() {
+    	angular.forEach($scope.componentNames, function(componentName) {
+    		$scope.checkboxes.push({"name": componentName, "checked": true})
+    	})
+    }
+
 	var getEnvironmentNames = function() {
 		return $http.get('/environments')
 			.then(function(response) {
@@ -26,7 +34,7 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', funct
 		return $http.get('/componentnames')
 			.then(function(response) {
 				$scope.componentNames = response.data;
-			});
+			}).then(function(){ if (jQuery.isEmptyObject($scope.checkboxes)){constructComponentCheckboxes()}});
 	}
 
 	var getEnrichedComponents = function() {

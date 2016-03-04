@@ -29,7 +29,7 @@ h1 {
 
 #navigation-toggle {
     position : absolute;
-    left : 220pt;
+    left : 300pt;
     background-color: #5A98D6;
     color : white;
     padding : 5px;
@@ -48,8 +48,6 @@ h1 {
 
 .fixed {
     position:fixed;
-    padding: 0 10pt;
-    right: 0;
 }
 
 .crowdmix-logo {
@@ -131,15 +129,16 @@ h1 {
 }
 
 .sidebar {
+	font-size: 10pt;
     position : absolute;
     top : 0;
     bottom: 0;
-    left : -250pt;
+    left : -330pt;
     transition : 100ms left;
     z-index: 10;
     background-color: #616363;
     padding: 10pt;
-    min-width: 220pt;
+    width: 300pt;
 }
 
 .show {
@@ -147,7 +146,7 @@ h1 {
 }
 
 .constrict {
-	margin-left: 220pt;
+	margin-left: 300pt;
 }
 
 .navigation {
