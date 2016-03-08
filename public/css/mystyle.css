@@ -77,7 +77,7 @@ h1 {
 }
 
 .component-box {
-	padding-top: 10px;
+	padding-top: 5px;
 	margin-bottom: 10pt;
 	border: 3px #2F3030 solid;
 	height: 80pt;
@@ -172,5 +172,15 @@ h1 {
 }
 
 .warning-text {
-	font-size: 10pt;
+	color: white;
+	font-size: 12pt;
+	padding-bottom: 5pt;
+}
+
+.component-checkbox {
+	background-color: #616363;
+	border: 5pt solid #616363;
+	width: 300pt
+	margin-left: 0;
+	padding-left: 20pt; 
 }

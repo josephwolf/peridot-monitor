@@ -3,6 +3,7 @@ module.exports = function(app) {
 	var https = require('https');
 	var multer = require('multer'); // v1.0.5
 	var path = require('path');
+	var git = require("nodegit");
 
 	var options = {
 		dotfiles: 'ignore',
@@ -97,7 +98,7 @@ module.exports = function(app) {
 
 					if (unenrichedEnvironment.version != responseData) {
 						if (unenrichedEnvironment.version != "Unavailable") { unenrichedEnvironment.lastVersion = unenrichedEnvironment.version }
-						if (responseData == 'Unable to retrieve version information') { unenrichedEnvironment.error = responseData } 
+						if (responseData == 'Unable to retrieve version information' || responseData == '') { unenrichedEnvironment.error = 'Unable to retrieve version information' } 
 						else {
 							unenrichedEnvironment.version = responseData;
 							unenrichedEnvironment.error = ''
@@ -135,10 +136,60 @@ module.exports = function(app) {
 		}
 	}
 
-	var refreshComponents = function () {
+	var refreshComponents = function() {
  	    enrichComponents();
 	    setTimeout(refreshComponents,10000);
 	};
+
+	var feedsGradlePropertiesVersion654 = '/feeds/814f294/app/gradle.properties?token=AGy972X3yWbTnr5KwNnHQVLYzMQuwWyxks5W5phBwA%3D%3D'
+	var feedsGradlePropertiesVersion655 = '/feeds/2514597/app/gradle.properties?token=AGy979596SF2O2cvs6lYWVVpjAhLb4hHks5W5pgzwA%3D%3D'
+
+	var getGitRaw = function() {
+		httpsOptions.host = 'jsonplaceholder.typicode.com/'
+		httpsOptions.path =  '/posts/'
+
+		var request = https.request(httpsOptions, function(response) {
+			var bodyChunks = [];
+			response
+			.on('data', function(chunk) { bodyChunks.push(chunk) })
+			.on('end', function() {
+				console.log( Buffer.concat(bodyChunks).toString() )
+			})
+		})
+	
+		request.end();
+		request.on('error', function(e) {console.error(e)});
+	}
+
+	// var getGitDiff = function() {
+	// 	var rawGit1 = getGitRaw(feedsGradlePropertiesVersion654);
+	// 	var rawGit2 = getGitRaw(feedsGradlePropertiesVersion655);
+	// }
+
+	// var getMostRecentCommit = function(repository) {
+ //  		return repository.getBranchCommit("master");
+	// };
+
+	// var getNodeGitMostRecentComit = function() {
+
+	// 	git.Repository.open("tmp")
+ //  		.then(function(repo) { return repo.getMasterCommit() })
+ //  		.then(function(firstCommitOnMaster) {
+ //  		  	var history = firstCommitOnMaster.history();
+	// 		var count = 0;
+
+ //  		  	history.on("start", function(commit) {
+ //  		  	  	if (++count >= 9) { return; }
+ //  		  	  	console.log("commit " + commit.sha());
+	// 			var author = commit.author();
+ //  		  	  	console.log("Author:\t" + author.name() + " <" + author.email() + ">");
+ //  		  	  	console.log("Date:\t" + commit.date());
+ //  		  	  	console.log("\n    " + commit.message());
+ //  		  });
+		
+ //  		  history.start();
+ //  		});
+	// }
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
@@ -162,5 +213,6 @@ module.exports = function(app) {
 		res.send(enrichedComponents)
 	});
 
+	getGitRaw();
 	refreshComponents();
 }
