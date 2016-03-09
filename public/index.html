@@ -4,107 +4,127 @@
 		<!-- META -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-	
+		
 		<title>Version Monitor</title>
-	
+		
 		<!-- Web dependencies -->
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		
 		<!-- CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/mystyle.css">
-	
+		
 		<!-- Javascript frameworks -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 		<script src="https://code.angularjs.org/1.4.9/angular-route.js"></script>
-		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		
 		<!-- File dependencies -->
 		<script src="/js/core.js"></script> <!-- load our main application -->
 		<script src="/js/controllers/mainController.js"></script> <!-- load up our controller -->
-		<script src="/js/controllers/sidebarController.js"></script> 
+		<script src="/js/controllers/sidebarController.js"></script>
 	</head>
 	
 	<body ng-controller="mainController" ng-cloak>
 		<div ng-controller="sidebarController">
 			<div class="container-fluid">
-	            <div class="sidebar" sidebar-directive="state">
-	                <a href="#" id="navigation-toggle" ng-click="toggleNavBar()">▶</a>
-	                <ul class="navigation">
-	                	<img src="/resources/Crowdmix_C_Icon_Mono_RGB_White.png" class="crowdmix-logo">
-	                	<!-- <img src="http://vignette1.wikia.nocookie.net/villains/images/0/0e/PeridotNoLimbs.png/revision/latest?cb=20150925014545" style="width: 200pt; bottom: 50pt; position: absolute;"> -->
-
-		            	<div ng-repeat="checkbox in checkboxes">
-		            	    <div class="col-md-12 component-checkbox">
-		            	    	<p><input type="checkbox" ng-model="checkbox.checked"><label style="padding-left: 10pt">{{checkbox.name}}</label></p>
-		            	    </div>
-		            	</div>                		
-
-	                </ul>
-	            </div>
-	        </div>
-
+				<div class="sidebar" sidebar-directive="state">
+					<a href="#" id="navigation-toggle" ng-click="toggleNavBar()">▶</a>
+					<ul class="navigation">
+						<img src="/resources/Crowdmix_C_Icon_Mono_RGB_White.png" class="crowdmix-logo">
+						<div ng-repeat="(checkboxName, checkboxValue) in checkboxes">
+							<div class="col-md-12 component-checkbox">
+								<p>
+									<input type="checkbox" ng-model="checkboxes[''+checkboxName]">
+									<label class="checkbox-label">{{checkboxName}}</label>
+								</p>
+							</div>
+						</div>
+					</ul>
+				</div>
+			</div>
 			<div class="main-view container-fluid">
-
 				<div id="wrapper">
 					<nav>
-				        <div class="col-md-{{gridColumns}} environment-name-box">Component</div> <!-- Upper left corner of rid -->
+						<div class="col-md-{{gridColumns}} environment-name-box">Component</div> <!-- Upper left corner of rid -->
 						<div ng-repeat="environmentName in environmentNames">
 							<div class="col-md-{{gridColumns}} environment-name-box">{{environmentName}}</div>
 						</div>
-				    </nav>
-				
-				    <div id="content">
-			 			<div ng-repeat="component in enrichedComponents track by $index">
-			 				<div ng-show="true">
-
-			 					<div class="col-md-{{gridColumns}} component-name-box component-box"><div class="component-name-text">{{component.name}}</div></div>
-			 					<div ng-repeat="environment in component.environments">
-			 						
-			 						<!-- CI build -->
-			 						<div ng-show="component.environments[0].name == environment.name">
-			 							<div class="col-md-{{gridColumns}} component-box good" ng-class="{
-				 							'inaccessable' : environment.error != '',
-				 							'critical' : environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'}">
-				 							<div class="component-box-inner">
-				 								<div ng-show="environment.error == ''" class="version-text">
-				 									<div ng-show="environment.version != 'Unavailable'">Version: {{environment.version}}</div>
-				 								</div>
-				 								<div ng-show="environment.error != '' || environment.version == 'Unavailable'">
-				 									<div class="error-text">Error: {{environment.error}}</div>
-				 								</div>
-				 								<div ng-show="environment.lastVersion =! 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
-				 							</div>
-				 						</div>
-			 						</div>
-
-			 						<!-- non-CI build -->
-			 						<div ng-show="component.environments[0].name != environment.name">
-			 							<div class="col-md-{{gridColumns}} component-box good" ng-class="{
-				 							'inaccessable' : environment.error != '' || component.environments[0].version == 'Unavailable',
-				 							'warning' : (component.environments[0].version - environment.version) > 2,
-				 							'bad' : (component.environments[0].version - environment.version) > 4,
-				 							'critical' : (component.environments[0].version - environment.version) > 6 || (component.environments[0].version - environment.version) < 0}">
-				 							<div class="component-box-inner">
-				 								<div ng-show="environment.error == ''" class="version-text">
-				 									Version: {{environment.version}}
-				 									<div ng-hide="component.environments[0].version == 'Unavailable'" class="last-version-text">{{component.environments[0].version - environment.version}} versions from {{component.environments[0].name}}</div>
-				 									<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
-				 								</div>
-				 								<div ng-show="environment.error != ''">
-				 									<div class="error-text">Error: {{environment.error}}</div>
-				 								</div>
-				 								<div ng-show="environment.lastVersion =! 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
-				 							</div>
-				 						</div>
-			 						</div>
-
-			 					</div>
-			 				</div>
-			 			</div>
-				    </div>
+					</nav>
+					
+					<div id="content">
+						<div ng-repeat="component in enrichedComponents track by $index">
+							<div ng-show="checkboxes[''+component.name]">
+								<div class="col-md-{{gridColumns}} component-name-box component-box"><div class="component-name-text">{{component.name}}</div></div>
+								<div ng-repeat="environment in component.environments">
+									
+									<!-- CI build -->
+									<div ng-show="component.environments[0].name == environment.name">
+										<div class="col-md-{{gridColumns}} component-box good" ng-class="{
+											'inaccessable' : environment.error != '',
+											'critical' : environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'}">
+											<div class="component-box-inner">
+												<div ng-show="environment.error == ''" class="version-text">
+													<div ng-show="environment.version != 'Unavailable'">Version: {{environment.version}}</div>
+												</div>
+												<div ng-show="environment.error != '' || environment.version == 'Unavailable'">
+													<div class="error-text">Error: {{environment.error}}</div>
+												</div>
+												<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+											</div>
+										</div>
+									</div>
+									<!-- non-CI build -->
+									<div ng-show="component.environments[0].name != environment.name">
+										<div ng-show="component.environments[0].version == 'Unavailable'">
+											<div class="col-md-{{gridColumns}} component-box good" ng-class="{
+												'inaccessable' : environment.error != '' || component.environments[0].lastVersion == 'No known last version',
+												'okay' : (component.environments[0].version - environment.version) > 0,
+												'warning' : (component.environments[0].lastVersion - environment.version) > 2,
+												'bad' : (component.environments[0].lastVersion - environment.version) > 4,
+												'critical' : (component.environments[0].lastVersion - environment.version) > 6 || (component.environments[0].lastVersion - environment.version) < 0}">
+												<div class="component-box-inner">
+													<div ng-show="environment.error == ''" class="version-text">
+														Version: {{environment.version}}
+														<div ng-hide="component.environments[0].version == 'Unavailable'" class="last-version-text">{{component.environments[0].version - environment.version}} versions from {{component.environments[0].name}}</div>
+														<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+													</div>
+													<div ng-show="environment.error != ''">
+														<div class="error-text">Error: {{environment.error}}</div>
+													</div>
+													<div ng-show="component.environments[0].version == 'Unavailable'"></div>
+													<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+												</div>
+											</div>
+										</div>
+										<div ng-show="component.environments[0].version != 'Unavailable'">
+											<div class="col-md-{{gridColumns}} component-box good" ng-class="{
+												'inaccessable' : environment.error != '' || component.environments[0].version == 'Unavailable',
+												'okay' : (component.environments[0].version - environment.version) > 0,
+												'warning' : (component.environments[0].version - environment.version) > 2,
+												'bad' : (component.environments[0].version - environment.version) > 4,
+												'critical' : (component.environments[0].version - environment.version) > 6 || (component.environments[0].version - environment.version) < 0}">
+												<div class="component-box-inner">
+													<div ng-show="environment.error == ''" class="version-text">
+														Version: {{environment.version}}
+														<div ng-hide="component.environments[0].version == 'Unavailable'" class="last-version-text">{{component.environments[0].version - environment.version}} versions from {{component.environments[0].name}}</div>
+														<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+													</div>
+													<div ng-show="environment.error != ''">
+														<div class="error-text">Error: {{environment.error}}</div>
+													</div>
+													<div ng-show="component.environments[0].version == 'Unavailable'"></div>
+													<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

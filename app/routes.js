@@ -3,7 +3,6 @@ module.exports = function(app) {
 	var https = require('https');
 	var multer = require('multer'); // v1.0.5
 	var path = require('path');
-	var git = require("nodegit");
 
 	var options = {
 		dotfiles: 'ignore',
@@ -107,12 +106,12 @@ module.exports = function(app) {
 				}
 
 				else {
-					if (unenrichedEnvironment.version != "Unavailable") { 
-						unenrichedEnvironment.lastVersion = unenrichedEnvironment.version; 
-						unenrichedEnvironment.version = "Unavailable" 
+					if (unenrichedEnvironment.version != 'Unavailable') { 
+						unenrichedEnvironment.lastVersion = unenrichedEnvironment.version;
+						unenrichedEnvironment.version = 'Unavailable' 
 					} 
-					if (response.statusCode == 502) { unenrichedEnvironment.error = "Bad Gateway" }
-					if (response.statusCode == 404) { unenrichedEnvironment.error = "Not Found" }
+					if (response.statusCode == 502) { unenrichedEnvironment.error = 'Bad Gateway' }
+					if (response.statusCode == 404) { unenrichedEnvironment.error = 'Not Found' }
 				}
 			})
 		})
@@ -124,7 +123,7 @@ module.exports = function(app) {
 	var enrichComponent = function(componentName) {
 		var enrichedComponent = {"name": componentName, "environments": []}
 		for (var i = environmentNames.length - 1; i >= 0; i--) {
-			enrichedComponent.environments[i] = {"name": environmentNames[i], "version": "Unavailable", "lastVersion": "No known last version", "error": ''}
+			enrichedComponent.environments[i] = {"name": environmentNames[i], "version": 'Unavailable', "lastVersion": 'No known last version', "error": ''}
 			getVersion(environmentNames[i], componentName)
 		}
 		if (typeof findComponent(componentName) != 'number') {enrichedComponents.unshift(enrichedComponent)}
@@ -161,36 +160,6 @@ module.exports = function(app) {
 		request.on('error', function(e) {console.error(e)});
 	}
 
-	// var getGitDiff = function() {
-	// 	var rawGit1 = getGitRaw(feedsGradlePropertiesVersion654);
-	// 	var rawGit2 = getGitRaw(feedsGradlePropertiesVersion655);
-	// }
-
-	// var getMostRecentCommit = function(repository) {
- //  		return repository.getBranchCommit("master");
-	// };
-
-	// var getNodeGitMostRecentComit = function() {
-
-	// 	git.Repository.open("tmp")
- //  		.then(function(repo) { return repo.getMasterCommit() })
- //  		.then(function(firstCommitOnMaster) {
- //  		  	var history = firstCommitOnMaster.history();
-	// 		var count = 0;
-
- //  		  	history.on("start", function(commit) {
- //  		  	  	if (++count >= 9) { return; }
- //  		  	  	console.log("commit " + commit.sha());
-	// 			var author = commit.author();
- //  		  	  	console.log("Author:\t" + author.name() + " <" + author.email() + ">");
- //  		  	  	console.log("Date:\t" + commit.date());
- //  		  	  	console.log("\n    " + commit.message());
- //  		  });
-		
- //  		  history.start();
- //  		});
-	// }
-
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -213,6 +182,6 @@ module.exports = function(app) {
 		res.send(enrichedComponents)
 	});
 
-	getGitRaw();
+	// getGitRaw();
 	refreshComponents();
 }

@@ -14,11 +14,11 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', funct
     	});
     });
 
-    $scope.checkboxes = [];
+    $scope.checkboxes = {};
 
     var constructComponentCheckboxes = function() {
     	angular.forEach($scope.componentNames, function(componentName) {
-    		$scope.checkboxes.push({"name": componentName, "checked": true})
+    		$scope.checkboxes[componentName.toString()] = true
     	})
     }
 

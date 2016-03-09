@@ -108,9 +108,14 @@ h1 {
 	background-color: #38E876;
 }
 
+.okay {
+	color: #2F3030;
+	background-color: #9DD982;
+}
+
 .warning {
 	color: #2F3030;
-	background-color: #E8E838;
+	background-color: #D9CF5F;
 }
 
 .bad {
@@ -179,8 +184,13 @@ h1 {
 
 .component-checkbox {
 	background-color: #616363;
-	border: 5pt solid #616363;
+	border: 2pt solid #616363;
 	width: 300pt
 	margin-left: 0;
 	padding-left: 20pt; 
+}
+
+.checkbox-label {
+	padding-left: 10pt;
+	font-size: 14pt;
 }
