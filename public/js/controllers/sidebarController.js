@@ -3,7 +3,7 @@
 var module = angular.module('sidebarcontroller', []);
 
 module.controller('sidebarController', function($scope) {
-    $scope.state = true;
+    $scope.state = false;
 
     $scope.toggleNavBar = function() {
         $scope.state = !$scope.state;
