@@ -3,6 +3,7 @@ module.exports = function(app) {
 	var https = require('https');
 	var multer = require('multer'); // v1.0.5
 	var path = require('path');
+	var request = require('request');
 
 	var options = {
 		dotfiles: 'ignore',
@@ -15,12 +16,21 @@ module.exports = function(app) {
 
 	var httpsOptions = {
 		method: 'GET',
-		host: '',
-		path: '',
 		port: 443,
 		headers: {
 			'Content-Type':'application/json;charset=utf-8',
 			'Accept':'application/json'
+		}
+	}
+
+	var githubHttpsOptions = {
+		method: 'GET',
+		port: 443,
+		headers: {
+			'Content-Type':'application/json;charset=utf-8',
+			'Accept':'application/json',
+			'User-Agent': 'josephwolf',
+			'Authorization': 'token xxx'
 		}
 	}
 
@@ -30,39 +40,40 @@ module.exports = function(app) {
 							"Staging",
 							"Production"]
 
-	var componentNames = ["profiles",
-						  "feeds",
-						  "matching",
-						  "media-access",
-						  "music-search",
-						  "listens-write",
-						  "listens-view-materializer",
-						  "listens-read",
-						  "recommendations",
-						  "search",
-						  "webshare",
-						  "webauth",
-						  "webinternal",
-						  "webartist",
-						  "notifications-read",
-						  "notifications-view-materializer",
-						  "content-sharing",
-						  "accounts",
-						  "accounts-processor",
-						  "moderation",
-						  "moderation-processor",
-						  "crowdmix-oauth-provider",
-						  "authentication",
-						  "trends-view-materializer",
-						  "trends-read",
-						  "summaries-view-materializer",
-						  "summaries-read",
-						  "external-moderation",
-						  "external-moderation-processor",
-						  "recent-listens-read",
-						  "recent-listens-view-materializer",
-						  "abuse-reporting",
-						  "kafka-event-monitor"]
+	var components = [{"name": "profiles", 							"repo": "profiles"},
+					  {"name": "feeds", 							"repo": "feeds"},
+					  {"name": "matching", 							"repo": "matching"},
+					  {"name": "music-search", 						"repo": "matching"},
+					  {"name": "media-access", 						"repo": "media-access"},
+					  {"name": "listens-write", 					"repo": "listens"},
+					  {"name": "listens-view-materializer", 		"repo": "listens"},
+					  {"name": "listens-read", 						"repo": "listens"},
+					  {"name": "recommendations", 					"repo": "recommendations"},
+					  {"name": "invitations", 						"repo": "invitations"},
+					  {"name": "search", 							"repo": "search"},
+					  {"name": "webshare", 							"repo": "web-share"},
+					  {"name": "webauth", 							"repo": "web-auth"},
+					  {"name": "webinternal", 						"repo": "web-internal"},
+					  {"name": "webartist", 						"repo": "web-artist"},
+					  {"name": "notifications-read", 				"repo": "notifications"},
+					  {"name": "notifications-view-materializer", 	"repo": "notifications"},
+					  {"name": "content-sharing", 					"repo": "content-sharing"},
+					  {"name": "accounts", 							"repo": "accounts"},
+					  {"name": "accounts-processor", 				"repo": "accounts"},
+					  {"name": "moderation", 						"repo": "moderation"},
+					  {"name": "moderation-processor", 				"repo": "moderation"},
+					  {"name": "crowdmix-oauth-provider", 			"repo": "crowdmix-oauth-provider"},
+					  {"name": "authentication", 					"repo": "authentication"},
+					  {"name": "trends-view-materializer", 			"repo": "trends"},
+					  {"name": "trends-read", 						"repo": "trends"},
+					  {"name": "summaries-view-materializer", 		"repo": "summaries"},
+					  {"name": "summaries-read", 					"repo": "summaries"},
+					  {"name": "external-moderation", 				"repo": "external-moderation"},
+					  {"name": "external-moderation-processor", 	"repo": "external-moderation"},
+					  {"name": "recent-listens-read", 				"repo": "recent-listens"},
+					  {"name": "recent-listens-view-materializer", 	"repo": "recent-listens"},
+					  {"name": "abuse-reporting", 					"repo": "abuse-reporting"},
+					  {"name": "kafka-event-monitor", 				"repo": "kafka-event-monitor"}]
 
 	var enrichedComponents = []
 
@@ -120,18 +131,18 @@ module.exports = function(app) {
 		request.on('error', function(e) {console.error(e)});
 	}
 
-	var enrichComponent = function(componentName) {
-		var enrichedComponent = {"name": componentName, "environments": []}
+	var enrichComponent = function(component) {
+		var enrichedComponent = {"name": component.name, "repo": component.repo, "environments": []}
 		for (var i = environmentNames.length - 1; i >= 0; i--) {
 			enrichedComponent.environments[i] = {"name": environmentNames[i], "version": 'Unavailable', "lastVersion": 'No known last version', "error": ''}
-			getVersion(environmentNames[i], componentName)
+			getVersion(environmentNames[i], component.name)
 		}
-		if (typeof findComponent(componentName) != 'number') {enrichedComponents.unshift(enrichedComponent)}
+		if (typeof findComponent(component.name) != 'number') {enrichedComponents.unshift(enrichedComponent)}
 	}
 
 	var enrichComponents = function() {
-		for (var i = componentNames.length - 1; i >= 0; i--) {
-			enrichComponent(componentNames[i])
+		for (var i = components.length - 1; i >= 0; i--) {
+			enrichComponent(components[i])
 		}
 	}
 
@@ -140,25 +151,24 @@ module.exports = function(app) {
 	    setTimeout(refreshComponents,10000);
 	};
 
-	var feedsGradlePropertiesVersion654 = '/feeds/814f294/app/gradle.properties?token=AGy972X3yWbTnr5KwNnHQVLYzMQuwWyxks5W5phBwA%3D%3D'
-	var feedsGradlePropertiesVersion655 = '/feeds/2514597/app/gradle.properties?token=AGy979596SF2O2cvs6lYWVVpjAhLb4hHks5W5pgzwA%3D%3D'
+	var getGitDiff = function(repoName, oldCommitId, newCommitId, res) {
+		githubHttpsOptions.url = 'https://api.github.com/repos/crowdmix/' + repoName + '/compare/' + oldCommitId + "..." + newCommitId
+		console.log("Comparing git commits: " + githubHttpsOptions.url)
 
-	var getGitRaw = function() {
-		httpsOptions.host = 'jsonplaceholder.typicode.com/'
-		httpsOptions.path =  '/posts/'
-
-		var request = https.request(httpsOptions, function(response) {
-			var bodyChunks = [];
-			response
-			.on('data', function(chunk) { bodyChunks.push(chunk) })
-			.on('end', function() {
-				console.log( Buffer.concat(bodyChunks).toString() )
-			})
+		request(githubHttpsOptions, function(error, response, body) {
+			if (error == null && response.statusCode == 200) { res.send(body) } 
+			else { res.send({"error": "Unable to get git diff"}) }
 		})
-	
-		request.end();
-		request.on('error', function(e) {console.error(e)});
 	}
+
+
+	var getGithubRepoTagData = function(repoName, res) {
+		githubHttpsOptions.url = 'https://api.github.com/repos/crowdmix/' + repoName + '/git/refs/tags'
+		console.log("Getting tag data: " + githubHttpsOptions.url)
+
+		request(githubHttpsOptions, function (error, response, body) { if (error == null && response.statusCode == 200) { res.send(body) } else { res.send({"error": "Unable to send tag data"})} })
+	}
+
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
@@ -171,7 +181,7 @@ module.exports = function(app) {
 	});
 
 	app.get('/componentnames', function(req, res) {
-		res.send(componentNames)
+		res.send(components)
 	});
 
 	app.get('/environments', function(req, res) {
@@ -182,6 +192,17 @@ module.exports = function(app) {
 		res.send(enrichedComponents)
 	});
 
-	// getGitRaw();
+	app.post('/gitdiff', function(req, res) {
+		getGitDiff(req.body.repoName, req.body.oldCommitId, req.body.newCommitId, res)
+	})
+
+	app.post('/tagdata', function(req, res) {
+		getGithubRepoTagData(req.body.repoName, res)
+	})
+
+	app.post('/commitmessage', function(req, res) {
+		//todo
+	})
+
 	refreshComponents();
 }

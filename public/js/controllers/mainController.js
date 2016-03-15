@@ -1,6 +1,6 @@
-var module = angular.module('peridotController', [])
+var module = angular.module('peridotController', ['gitservice'])
 
-module.controller('mainController', ['$scope', '$q', '$interval', '$http', function($scope, $q, $interval, $http) {
+module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitService', function($scope, $q, $interval, $http, gitService) {
 
 	$(document).ready(function() {
     	var aboveHeight = $('header').outerHeight();
@@ -17,8 +17,8 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', funct
     $scope.checkboxes = {};
 
     var constructComponentCheckboxes = function() {
-    	angular.forEach($scope.componentNames, function(componentName) {
-    		$scope.checkboxes[componentName.toString()] = true
+    	angular.forEach($scope.components, function(component) {
+    		$scope.checkboxes[component.name.toString()] = true
     	})
     }
 
@@ -30,11 +30,10 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', funct
 			});
 	}
 
-	var getComponentNames = function() {
+	var getComponents = function() {
 		return $http.get('/componentnames')
-			.then(function(response) {
-				$scope.componentNames = response.data;
-			}).then(function(){ if (jQuery.isEmptyObject($scope.checkboxes)){constructComponentCheckboxes()}});
+			.then(function(response) { $scope.components = response.data })
+			.then(function(){ if (jQuery.isEmptyObject($scope.checkboxes)){constructComponentCheckboxes()}});
 	}
 
 	var getEnrichedComponents = function() {
@@ -49,8 +48,12 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', funct
 		getEnrichedComponents()
 	};
 
+	$scope.getGitDiff = function(repoName, oldVersion, newVersion) {
+		gitService.compareComponentVersions(repoName, oldVersion, newVersion)
+	}
+
 	getEnvironmentNames();
-	getComponentNames();
+	getComponents();
 	getEnrichedComponents();
 	$interval(refreshComponents, 10000);
 }]);
