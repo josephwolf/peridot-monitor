@@ -8,7 +8,7 @@ gitService.service('gitService', ['$http', '$q', function($http, $q) {
 	var getGitDiff = function(repoName, oldCommitId, newCommitId) {
 		var request = {"repoName": repoName, "oldCommitId": oldCommitId, "newCommitId": newCommitId}
 		return $http.post('/gitdiff', request)
-			.then(function(response) { console.log("response data: ", response.data.diff_url )});
+			.then(function(response) { console.log("RESULT DIFF: ", response.data.diff_url )});
 
 		var oldCommitId = ""
 		var newCommitId = ""
@@ -16,7 +16,6 @@ gitService.service('gitService', ['$http', '$q', function($http, $q) {
 	}
 
 	var getTagData = function(repoName) {
-		console.log("getting tag data for: " + repoName)
 		var request = {"repoName": repoName}
 		return $http.post('/tagdata', request)
 			.then(function(response) { return response.data });
@@ -24,24 +23,61 @@ gitService.service('gitService', ['$http', '$q', function($http, $q) {
 		return $q.defer().promise;
 	}
 
-	var processTagData = function(tagData, oldVersion, newVersion) {
-		angular.forEach(tagData, function(tag) {
-			if (tag.ref) {
-				var tagRefSplitBySlashAndHyphen = tag.ref.split(/(?:\/|-)/g)
-				var lastInSplitAray = tagRefSplitBySlashAndHyphen[tagRefSplitBySlashAndHyphen.length - 1]
+	var getCommitData = function(repoName) {
+		var request = {"repoName": repoName}
+		return $http.post('/commitdata', request)
+			.then(function(response) { return response.data });
 
-        		tag.version = lastInSplitAray
-		
-				if (tag.version == oldVersion) { oldCommitId = tag.object.sha; console.log("Matched tag to version: ", tag) }
-				if (tag.version == newVersion) { newCommitId = tag.object.sha; console.log("Matched tag to version: ", tag) }
-			}
-		})
+		return $q.defer().promise;
 	}
 
-	gitService.compareComponentVersions = function(repoName, oldVersion, newVersion) {
+	var getVersionsFromTagData = function(repoName, tagData, oldVersion, newVersion) {
+		var earlyTag = {}
+		var lateTag = {}
+
+		angular.forEach(tagData, function(tag) {
+			var tagRefSplitBySlashAndHyphen = tag.ref.split(/(?:\/|-)/g)
+			var tagVersion = tagRefSplitBySlashAndHyphen[tagRefSplitBySlashAndHyphen.length - 1]
+
+	        if (tagVersion == oldVersion) { earlyTag = tag }
+	     	if (tagVersion == newVersion) { lateTag = tag }
+		})
+
+		return getCommitDataForTagRange(repoName, earlyTag, lateTag)
+	}
+
+	var getCommitDataForTagRange = function(repoName, earlyTag, lateTag) {
+		getCommitData(repoName)
+		.then(function(repoCommitData) { return correlateTagsToCommitData(repoCommitData, earlyTag, lateTag) })
+	}
+
+	var correlateTagsToCommitData = function(commitData, earlyTag, lateTag) {
+		var earlyCommit = {}
+		var lateCommit = {}
+
+		angular.forEach(commitData, function(commit) {
+			if ( commit.sha == earlyTag.object.sha ) { earlyCommit = commit }
+			if ( commit.sha == lateTag.object.sha ) { lateCommit = commit }
+		})
+
+		return readMessageFromCommitRange(commitData, earlyCommit, lateCommit)
+	}
+
+	var readMessageFromCommitRange = function(commitData, earlyCommit, lateCommit) {
+		var collectedCommits = []
+		for (var i = commitData.length - 1; i >= 0; i--) {
+			if (i <= commitData.indexOf(earlyCommit) && i >= commitData.indexOf(lateCommit)) {
+				collectedCommits.push({"id": commitData[i].sha, "message": commitData[i].commit.message, "author": commitData[i].author.login})
+			}
+		}
+		console.log(collectedCommits)
+		return collectedCommits
+	}
+
+	gitService.getCommitMessagesFromVersionRange = function(repoName, oldVersion, newVersion) {
 		getTagData(repoName)
-		.then(function(tagData) { processTagData(tagData, oldVersion, newVersion) })
-		.then(function() { return getGitDiff(repoName, oldCommitId, newCommitId) })
+		.then(function(tagData) { getVersionsFromTagData(repoName, tagData, oldVersion, newVersion) })
+		.then(function(commitData) { console.log(commitData) })
 		return $q.defer().promise;
 	}
 

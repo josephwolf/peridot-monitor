@@ -49,7 +49,7 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 	};
 
 	$scope.getGitDiff = function(repoName, oldVersion, newVersion) {
-		gitService.compareComponentVersions(repoName, oldVersion, newVersion)
+		gitService.getCommitMessagesFromVersionRange(repoName, oldVersion, newVersion)
 	}
 
 	getEnvironmentNames();

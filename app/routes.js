@@ -30,7 +30,7 @@ module.exports = function(app) {
 			'Content-Type':'application/json;charset=utf-8',
 			'Accept':'application/json',
 			'User-Agent': 'josephwolf',
-			'Authorization': 'token xxx'
+			'Authorization': 'token XXX'
 		}
 	}
 
@@ -153,7 +153,6 @@ module.exports = function(app) {
 
 	var getGitDiff = function(repoName, oldCommitId, newCommitId, res) {
 		githubHttpsOptions.url = 'https://api.github.com/repos/crowdmix/' + repoName + '/compare/' + oldCommitId + "..." + newCommitId
-		console.log("Comparing git commits: " + githubHttpsOptions.url)
 
 		request(githubHttpsOptions, function(error, response, body) {
 			if (error == null && response.statusCode == 200) { res.send(body) } 
@@ -164,9 +163,20 @@ module.exports = function(app) {
 
 	var getGithubRepoTagData = function(repoName, res) {
 		githubHttpsOptions.url = 'https://api.github.com/repos/crowdmix/' + repoName + '/git/refs/tags'
-		console.log("Getting tag data: " + githubHttpsOptions.url)
 
-		request(githubHttpsOptions, function (error, response, body) { if (error == null && response.statusCode == 200) { res.send(body) } else { res.send({"error": "Unable to send tag data"})} })
+		request(githubHttpsOptions, function (error, response, body) { 
+			if (error == null && response.statusCode == 200) { res.send(body) } 
+			else { res.send({"error": "Unable to send tag data"})} 
+		})
+	}
+
+	var getGithubRepoCommitData = function(repoName, res) {
+		githubHttpsOptions.url = 'https://api.github.com/repos/crowdmix/' + repoName + '/commits?sha=master'
+
+		request(githubHttpsOptions, function (error, response, body) { 
+			if (error == null && response.statusCode == 200) { res.send(body) } 
+			else { res.send({"error": "Unable to send tag data"})} 
+		})
 	}
 
 
@@ -200,8 +210,8 @@ module.exports = function(app) {
 		getGithubRepoTagData(req.body.repoName, res)
 	})
 
-	app.post('/commitmessage', function(req, res) {
-		//todo
+	app.post('/commitdata', function(req, res) {
+		getGithubRepoCommitData(req.body.repoName, res)
 	})
 
 	refreshComponents();

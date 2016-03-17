@@ -89,7 +89,7 @@
 												'critical' : (component.environments[0].lastVersion - environment.version) > 6 || (component.environments[0].lastVersion - environment.version) < 0}">
 												<div class="component-box-inner">
 													<div ng-show="environment.error == ''" class="version-text">
-														Version: {{environment.version}}
+														<div ng-show="environment.version != 'Unavailable'"> Version: {{environment.version}}</div>
 														<div ng-hide="component.environments[0].lastVersion == 'No known last version'" class="last-version-text">{{component.environments[0].lastVersion - environment.version}} versions from {{component.environments[0].name}}</div>
 														<div ng-show="component.environments[0].lastVersion < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 													</div>
@@ -111,7 +111,7 @@
 												'critical' : (component.environments[0].version - environment.version) > 6 || (component.environments[0].version - environment.version) < 0}">
 												<div class="component-box-inner">
 													<div ng-show="environment.error == ''" class="version-text">
-														Version: {{environment.version}}
+														<div ng-show="environment.version != 'Unavailable'"> Version: {{environment.version}}</div>
 														<div ng-hide="component.environments[0].version == 'Unavailable'" class="last-version-text">{{component.environments[0].version - environment.version}} versions from {{component.environments[0].name}}</div>
 														<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 													</div>
@@ -128,7 +128,22 @@
 							</div>
 						</div>
 
-						<div>tag data: {{tagdata}}</div>
+<!-- 						<h1>Modal example</h1>
+						<button ng-click="toggleModal()" class="btn btn-default">Open modal</button>
+						  
+						<modal title="Login form" visible="showModal">
+						    <form role="form">
+						        <div class="form-group">
+						            <label for="email">Email address</label>
+						            <input type="email" class="form-control" id="email" placeholder="Enter email" />
+						        </div>
+						        <div class="form-group">
+						            <label for="password">Password</label>
+						            <input type="password" class="form-control" id="password" placeholder="Password" />
+						        </div>
+						        <button type="submit" class="btn btn-default">Submit</button>
+						    </form>
+						</modal> -->
 
 					</div>
 				</div>
