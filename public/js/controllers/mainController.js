@@ -15,6 +15,9 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
     });
 
     $scope.checkboxes = {};
+    $scope.showModal = false;
+    $scope.toggleModal = function(){ $scope.showModal = !$scope.showModal; };
+    $scope.collectedCommits = []
 
     var constructComponentCheckboxes = function() {
     	angular.forEach($scope.components, function(component) {
@@ -49,6 +52,7 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 	};
 
 	$scope.getGitDiff = function(repoName, oldVersion, newVersion) {
+		$scope.gitDiffTitle = "Commits between " + repoName + " " + oldVersion + " and " + repoName + " " + newVersion
 		gitService.getCommitMessagesFromVersionRange(repoName, oldVersion, newVersion)
 	}
 
@@ -57,3 +61,40 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 	getEnrichedComponents();
 	$interval(refreshComponents, 10000);
 }]);
+
+module.directive('modal', function () {
+    return {
+      	template: '<div class="modal fade">' + 
+      	    '<div class="modal-dialog">' + 
+      	        '<div class="modal-content">' + 
+                	'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
+                	'<div class="modal-body" ng-transclude></div>' + 
+      	        '</div>' + 
+      	    '</div>' + 
+      	'</div>',
+      	restrict: 'E',
+      	transclude: true,
+      	replace:true,
+      	scope:true,
+      	link: function postLink(scope, element, attrs) {	  
+      	    scope.$watch(attrs.visible, function(value){
+      	        if(value == true)
+      	            $(element).modal('show');
+      	        else
+      	            $(element).modal('hide');
+      	    });
+	  
+      	    $(element).on('shown.bs.modal', function(){
+      	      scope.$apply(function(){
+      	        scope.$parent[attrs.visible] = true;
+      	      });
+      	    });
+	  
+      	    $(element).on('hidden.bs.modal', function(){
+      	      scope.$apply(function(){
+      	        scope.$parent[attrs.visible] = false;
+      	      });
+      	    });
+      	}
+    };
+});

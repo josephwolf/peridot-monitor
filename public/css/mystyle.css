@@ -194,3 +194,39 @@ h1 {
 	padding-left: 10pt;
 	font-size: 14pt;
 }
+
+.modal-content {
+	z-index: 5;
+	background-color: white;
+	color: black;
+	border-radius: 10pt;
+	top: 0;
+	left: 0;
+	margin: 20pt;
+}
+
+.close {
+	z-index: 6;
+	font-size: 50pt;
+	line-height: 20pt;
+	margin: 10pt;
+}
+
+.modal-dialog {
+	left: 0;
+	width: auto;
+	margin: 40pt auto;
+}
+
+.modal-header {
+	font-size: 30pt;
+}
+
+.modal-title {
+	font-size: 20pt;
+	line-height: auto;
+}
+
+.modal-body {
+    padding: 25pt;
+}

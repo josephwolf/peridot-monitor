@@ -56,6 +56,7 @@
 					</nav>
 					
 					<div id="content">
+
 						<div ng-repeat="component in enrichedComponents track by $index">
 							<div ng-show="checkboxes[''+component.name]" class="col-md-12">
 								<div class="col-md-{{gridColumns}} component-name-box component-box"><div class="component-name-text">{{component.name}}</div></div>
@@ -81,7 +82,7 @@
 									<div ng-show="component.environments[0].name != environment.name">
 										<!-- CI is not available -->
 										<div ng-show="component.environments[0].version == 'Unavailable'">
-											<div class="col-md-{{gridColumns}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].lastVersion)" ng-class="{
+											<div class="col-md-{{gridColumns}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].lastVersion); toggleModal()" ng-class="{
 												'inaccessable' : environment.error != '' || component.environments[0].lastVersion == 'No known last version',
 												'okay' : (component.environments[0].version - environment.version) > 0,
 												'warning' : (component.environments[0].lastVersion - environment.version) > 2,
@@ -103,7 +104,7 @@
 										</div>
 										<!-- CI is available -->
 										<div ng-show="component.environments[0].version != 'Unavailable'">
-											<div class="col-md-{{gridColumns}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].version)" ng-class="{
+											<div class="col-md-{{gridColumns}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].version); toggleModal()" ng-class="{
 												'inaccessable' : environment.error != '' || component.environments[0].version == 'Unavailable',
 												'okay' : (component.environments[0].version - environment.version) > 0,
 												'warning' : (component.environments[0].version - environment.version) > 2,
@@ -127,23 +128,11 @@
 								</div>
 							</div>
 						</div>
-
-<!-- 						<h1>Modal example</h1>
-						<button ng-click="toggleModal()" class="btn btn-default">Open modal</button>
 						  
-						<modal title="Login form" visible="showModal">
-						    <form role="form">
-						        <div class="form-group">
-						            <label for="email">Email address</label>
-						            <input type="email" class="form-control" id="email" placeholder="Enter email" />
-						        </div>
-						        <div class="form-group">
-						            <label for="password">Password</label>
-						            <input type="password" class="form-control" id="password" placeholder="Password" />
-						        </div>
-						        <button type="submit" class="btn btn-default">Submit</button>
-						    </form>
-						</modal> -->
+						<modal visible="showModal">
+							<h2>{{gitDiffTitle}}</h2>
+						    <div>{{gitDiffMessages}}</div>
+						</modal>
 
 					</div>
 				</div>
