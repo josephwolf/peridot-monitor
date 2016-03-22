@@ -2,18 +2,18 @@ var gitService = angular.module('gitservice', []);
 
 gitService.service('gitService', ['$http', '$q', function($http, $q) {
 	var gitService = this;
-	// var oldCommitId = ""
-	// var newCommitId = ""
+	var oldCommitId = ""
+	var newCommitId = ""
 
-	// var getGitDiff = function(repoName, oldCommitId, newCommitId) {
-	// 	var request = {"repoName": repoName, "oldCommitId": oldCommitId, "newCommitId": newCommitId}
-	// 	return $http.post('/gitdiff', request)
-	// 		.then(function(response) { console.log("RESULT DIFF: ", response.data.diff_url )});
+	gitService.getGitDiff = function(repoName, oldCommitId, newCommitId) {
+		var request = {"repoName": repoName, "oldCommitId": oldCommitId, "newCommitId": newCommitId}
+		return $http.post('/gitdiff', request)
+			.then(function(response) { console.log("DIFF FILE: ", response.data.diff_url )});
 
-	// 	var oldCommitId = ""
-	// 	var newCommitId = ""
-	// 	return $q.defer().promise;
-	// }
+		var oldCommitId = ""
+		var newCommitId = ""
+		return $q.defer().promise;
+	}
 
 	var getTagData = function(repoName) {
 		var request = {"repoName": repoName}
@@ -23,26 +23,32 @@ gitService.service('gitService', ['$http', '$q', function($http, $q) {
 		return $q.defer().promise;
 	}
 
-	var getVersionsFromTagData = function(tagData, oldVersion, newVersion) {
-		var earlyTag = {}
-		var lateTag = {}
 
-		angular.forEach(tagData, function(tag) {
-			var tagRefSplitBySlashAndHyphen = tag.ref.split(/(?:\/|-)/g)
-			var tagVersion = tagRefSplitBySlashAndHyphen[tagRefSplitBySlashAndHyphen.length - 1]
+	var getVersionTagsFromTagData = function(oldVersion, newVersion) {
+		return function(tagData) {
+			var earlyTag = {}
+			var lateTag = {}
 
-	        if (tagVersion == oldVersion) { earlyTag = tag }
-	     	if (tagVersion == newVersion) { lateTag = tag }
-		})
-		return {"earlyTag": earlyTag, "lateTag": lateTag}
+			angular.forEach(tagData, function(tag) {
+				var tagRefSplitBySlashAndHyphen = tag.ref.split(/(?:\/|-)/g)
+				var tagVersion = tagRefSplitBySlashAndHyphen[tagRefSplitBySlashAndHyphen.length - 1]
+
+		        if (tagVersion == oldVersion) { earlyTag = tag }
+		     	if (tagVersion == newVersion) { lateTag = tag }
+			})
+
+			return {"earlyTag": earlyTag, "lateTag": lateTag}
+		}
 	}
 
 	var getCommitData = function(repoName) {
-		var request = {"repoName": repoName}
-		return $http.post('/commitdata', request)
-			.then(function(response) { return response.data });
-
-		return $q.defer().promise;
+		return function(tags) {
+			var request = {"repoName": repoName}
+			return $http.post('/commitdata', request)
+				.then(function(response) { return {"commitData": response.data, "tags": tags} });
+	
+			return $q.defer().promise;
+		}
 	}
 
 	var correlateTagsToCommitData = function(commitData, earlyTag, lateTag) {
@@ -53,7 +59,8 @@ gitService.service('gitService', ['$http', '$q', function($http, $q) {
 			if ( commit.sha == earlyTag.object.sha ) { earlyCommit = commit }
 			if ( commit.sha == lateTag.object.sha ) { lateCommit = commit }
 		})
-		return {"earlyCommit": earlyCommit, "lateCommit": lateCommit}
+
+		return readMessageFromCommitRange(commitData, earlyCommit, lateCommit)
 	}
 
 	var readMessageFromCommitRange = function(commitData, earlyCommit, lateCommit) {
@@ -67,19 +74,10 @@ gitService.service('gitService', ['$http', '$q', function($http, $q) {
 	}
 
 	gitService.getCommitMessagesFromVersionRange = function(repoName, oldVersion, newVersion) {
-		var retrievedTagRange = {}
-
-		getTagData(repoName)
-			.then(function(tagData) {
-				var retrievedTagRange = getVersionsFromTagData(tagData, oldVersion, newVersion) 
-				getCommitData(repoName)
-			})
-			.then(function(commitData) { 
-				console.log("",commitData)
-				var commitRange = correlateTagsToCommitData(commitData, retrievedTagRange.earlyTag, retrievedTagRange.lateTag)
-				console.log( "Final: ",readMessageFromCommitRange(commitData, commitRange.earlyCommit, commitRange.lateCommit) )
-			})
-
-		return $q.defer().promise;
+		return getTagData(repoName)
+		.then(getVersionTagsFromTagData(oldVersion, newVersion))
+		.then(getCommitData(repoName))
+		.then(function(commitDataAndTags) { return correlateTagsToCommitData(commitDataAndTags.commitData, commitDataAndTags.tags.earlyTag, commitDataAndTags.tags.lateTag) })
 	}
+
 }]);

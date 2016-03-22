@@ -77,6 +77,7 @@ h1 {
 }
 
 .component-box {
+	cursor: pointer;
 	padding-top: 5px;
 	margin-bottom: 10pt;
 	border: 3px #2F3030 solid;
@@ -140,7 +141,7 @@ h1 {
     bottom: 0;
     left : -330pt;
     transition : 100ms left;
-    z-index: 10;
+    z-index: 4;
     background-color: #616363;
     padding: 10pt;
     width: 300pt;
@@ -196,7 +197,7 @@ h1 {
 }
 
 .modal-content {
-	z-index: 5;
+	z-index: 6;
 	background-color: white;
 	color: black;
 	border-radius: 10pt;
@@ -206,13 +207,13 @@ h1 {
 }
 
 .close {
-	z-index: 6;
+	z-index: 8;
 	font-size: 50pt;
-	line-height: 20pt;
-	margin: 10pt;
+	line-height: 40pt;
 }
 
 .modal-dialog {
+	z-index: 5;
 	left: 0;
 	width: auto;
 	margin: 40pt auto;
@@ -223,10 +224,15 @@ h1 {
 }
 
 .modal-title {
-	font-size: 20pt;
+	font-size: 28pt;
 	line-height: auto;
 }
 
 .modal-body {
+	z-index: 7;
     padding: 25pt;
+}
+
+.commit-message-text {
+	margin-bottom: 20pt;
 }

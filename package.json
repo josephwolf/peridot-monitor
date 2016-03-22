@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "angular": "^1.4.8",
+    "basic-auth": "^1.0.3",
     "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "multer": "^1.1.0",

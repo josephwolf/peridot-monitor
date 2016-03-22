@@ -30,7 +30,7 @@ module.exports = function(app) {
 			'Content-Type':'application/json;charset=utf-8',
 			'Accept':'application/json',
 			'User-Agent': 'josephwolf',
-			'Authorization': 'token xxx'
+			'Authorization': 'CHANGEME'
 		}
 	}
 

@@ -25,7 +25,7 @@
 		<script src="/js/core.js"></script> <!-- load our main application -->
 		<script src="/js/controllers/mainController.js"></script> <!-- load up our controller -->
 		<script src="/js/controllers/sidebarController.js"></script>
-		<script src="/js/services/gitService.js"></script>
+		<script src="/js/Services/gitService.js"></script>
 	</head>
 	
 	<body ng-controller="mainController" ng-cloak>
@@ -34,7 +34,7 @@
 				<div class="sidebar" sidebar-directive="state">
 					<a href="#" id="navigation-toggle" ng-click="toggleNavBar()">▶</a>
 					<ul class="navigation">
-						<img src="/resources/Crowdmix_C_Icon_Mono_RGB_White.png" class="crowdmix-logo">
+						<img src="/resources/new_logo_lol.png" class="crowdmix-logo">
 						<div ng-repeat="(checkboxName, checkboxValue) in checkboxes">
 							<div class="col-md-12 component-checkbox">
 								<p>
@@ -129,9 +129,16 @@
 							</div>
 						</div>
 						  
-						<modal visible="showModal">
-							<h2>{{gitDiffTitle}}</h2>
-						    <div>{{gitDiffMessages}}</div>
+						<modal title="{{gitDiffTitle}}" visible="showModal">
+							<div ng-show="loading">Loading...</div>
+							<div ng-show="!loading && (angular.isUndefined(collectedCommits) || collectedCommits == [])">
+								There was an error retrieving the commit log.
+							</div>
+							<div ng-repeat="commit in collectedCommits track by $index">
+								<div>Author: {{commit.author}}</div>
+								<div class="last-version-text">Commit ID: {{commit.id}}</div>
+								<div class="commit-message-text">Message: {{commit.message}}</div>
+							</div>
 						</modal>
 
 					</div>

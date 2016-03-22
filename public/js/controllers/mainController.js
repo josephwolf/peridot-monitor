@@ -18,6 +18,8 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
     $scope.showModal = false;
     $scope.toggleModal = function(){ $scope.showModal = !$scope.showModal; };
     $scope.collectedCommits = []
+    $scope.loading = false
+
 
     var constructComponentCheckboxes = function() {
     	angular.forEach($scope.components, function(component) {
@@ -52,8 +54,11 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 	};
 
 	$scope.getGitDiff = function(repoName, oldVersion, newVersion) {
+		$scope.loading = true
+		$scope.collectedCommits = []
 		$scope.gitDiffTitle = "Commits between " + repoName + " " + oldVersion + " and " + repoName + " " + newVersion
 		gitService.getCommitMessagesFromVersionRange(repoName, oldVersion, newVersion)
+		.then(function(commitMessages){ $scope.loading = false; $scope.collectedCommits = commitMessages; gitService.getGitDiff(repoName, commitMessages[0].id, commitMessages[commitMessages.length - 1]) })
 	}
 
 	getEnvironmentNames();
@@ -65,13 +70,16 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 module.directive('modal', function () {
     return {
       	template: '<div class="modal fade">' + 
-      	    '<div class="modal-dialog">' + 
-      	        '<div class="modal-content">' + 
-                	'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                	'<div class="modal-body" ng-transclude></div>' + 
-      	        '</div>' + 
-      	    '</div>' + 
-      	'</div>',
+		      	    '<div class="modal-dialog">' + 
+		      	        '<div class="modal-content">' + 
+		      	            '<div class="modal-header">' + 
+                				'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
+                				'<h4 class="modal-title">{{ gitDiffTitle }}</h4>' + 
+              				'</div>' + 
+		                	'<div class="modal-body" ng-transclude></div>' + 
+		      	        '</div>' + 
+		      	    '</div>' + 
+		      	'</div>',
       	restrict: 'E',
       	transclude: true,
       	replace:true,
@@ -84,13 +92,13 @@ module.directive('modal', function () {
       	            $(element).modal('hide');
       	    });
 	  
-      	    $(element).on('shown.bs.modal', function(){
+      	    $(element).on('show.modal', function(){
       	      scope.$apply(function(){
       	        scope.$parent[attrs.visible] = true;
       	      });
       	    });
 	  
-      	    $(element).on('hidden.bs.modal', function(){
+      	    $(element).on('hide.modal', function(){
       	      scope.$apply(function(){
       	        scope.$parent[attrs.visible] = false;
       	      });
