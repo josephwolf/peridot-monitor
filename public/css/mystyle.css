@@ -93,11 +93,13 @@ h1 {
 }
 
 .component-name-box {
+	cursor: default;
 	padding-top: 0;
 	line-height: 80pt;
 }
 
 .environment-name-box {
+	cursor: default;
 	background-color: #2F3030;
 	text-align: center;
 	font-size: 30pt;
@@ -235,4 +237,10 @@ h1 {
 
 .commit-message-text {
 	margin-bottom: 20pt;
+}
+
+.commit-error-message {
+	margin-bottom: 10pt;
+	text-align: center;
+	font-size: 28pt;
 }

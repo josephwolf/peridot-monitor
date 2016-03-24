@@ -45,7 +45,6 @@ module.exports = function(app) {
 					  {"name": "accounts-processor", 				"repo": "accounts"},
 					  {"name": "authentication", 					"repo": "authentication"},
 					  {"name": "content-sharing", 					"repo": "content-sharing"},
-					  {"name": "crowdmix-oauth-provider", 			"repo": "crowdmix-oauth-provider"},
 					  {"name": "external-moderation-processor", 	"repo": "external-moderation"},
 					  {"name": "external-moderation-outbound", 		"repo": "external-moderation"},
 					  {"name": "feeds", 							"repo": "feeds"},
@@ -180,6 +179,14 @@ module.exports = function(app) {
 		})
 	}
 
+	var getGithubTagCommitData = function(url, res) {
+		githubHttpsOptions.url = url
+
+		request(githubHttpsOptions, function (error, response, body) { 
+			if (error == null && response.statusCode == 200) { res.send(body) } 
+			else { res.send({"error": "Unable to send tag data"})} 
+		})
+	}
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
@@ -213,6 +220,10 @@ module.exports = function(app) {
 
 	app.post('/commitdata', function(req, res) {
 		getGithubRepoCommitData(req.body.repoName, res)
+	})
+
+	app.post('/tagcommitdata', function(req, res) {
+		getGithubTagCommitData(req.body.url, res)
 	})
 
 	refreshComponents();

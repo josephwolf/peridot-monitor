@@ -58,7 +58,7 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 		$scope.collectedCommits = []
 		$scope.gitDiffTitle = "Commits between " + repoName + " " + oldVersion + " and " + repoName + " " + newVersion
 		gitService.getCommitMessagesFromVersionRange(repoName, oldVersion, newVersion)
-		.then(function(commitMessages){ $scope.loading = false; $scope.collectedCommits = commitMessages; gitService.getGitDiff(repoName, commitMessages[0].id, commitMessages[commitMessages.length - 1]) })
+		.then(function(commitMessages){ $scope.loading = false; $scope.collectedCommits = commitMessages })
 	}
 
 	getEnvironmentNames();
@@ -70,10 +70,10 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 module.directive('modal', function () {
     return {
       	template: '<div class="modal fade">' + 
-		      	    '<div class="modal-dialog">' + 
+		      	    '<div ng-click="" class="modal-dialog">' + 
 		      	        '<div class="modal-content">' + 
 		      	            '<div class="modal-header">' + 
-                				'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
+                				'<button ng-click="toggleModal()" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
                 				'<h4 class="modal-title">{{ gitDiffTitle }}</h4>' + 
               				'</div>' + 
 		                	'<div class="modal-body" ng-transclude></div>' + 
