@@ -132,6 +132,7 @@ h1 {
 }
 
 .inaccessable {
+	cursor: default;
 	color: #D7DBDE;
 	background-color: #636466;
 }
@@ -243,4 +244,11 @@ h1 {
 	margin-bottom: 10pt;
 	text-align: center;
 	font-size: 28pt;
+}
+
+.footer {
+	text-align: center;
+	font-size: 20pt;
+	color: #636466;
+	margin-bottom: 20pt;
 }

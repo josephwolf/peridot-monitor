@@ -56,7 +56,6 @@
 					</nav>
 					
 					<div id="content">
-
 						<div ng-repeat="component in enrichedComponents track by $index">
 							<div ng-show="checkboxes[''+component.name]" class="col-md-12">
 								<div class="col-md-{{gridColumns}} component-name-box component-box"><div class="component-name-text">{{component.name}}</div></div>
@@ -74,52 +73,78 @@
 												<div ng-show="environment.error != '' || environment.version == 'Unavailable'">
 													<div class="error-text">Error: {{environment.error}}</div>
 												</div>
-												<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+												<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 											</div>
 										</div>
 									</div>
 									<!-- non-CI build -->
 									<div ng-show="component.environments[0].name != environment.name">
-										<!-- CI is not available -->
-										<div ng-show="component.environments[0].version == 'Unavailable'">
+										<!-- CI is unavailable but CI last version is  available -->
+										<div ng-show="component.environments[0].version == 'Unavailable' && component.environments[0].lastVersion != 'No known last version'">
 											<div class="col-md-{{gridColumns}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].lastVersion); toggleModal()" ng-class="{
-												'inaccessable' : environment.error != '' || component.environments[0].lastVersion == 'No known last version',
-												'okay' : (component.environments[0].version - environment.version) > 0,
+												'inaccessable' : environment.error != '',
+												'okay' : (component.environments[0].lastVersion - environment.version) > 0,
 												'warning' : (component.environments[0].lastVersion - environment.version) > 2,
 												'bad' : (component.environments[0].lastVersion - environment.version) > 4,
 												'critical' : (component.environments[0].lastVersion - environment.version) > 6 || (component.environments[0].lastVersion - environment.version) < 0}">
 												<div class="component-box-inner">
-
 													<!-- there are no errors -->
 													<div ng-show="environment.error == ''" class="version-text">
 														<!-- current version is available -->
-														<div ng-show="environment.version != 'Unavailable'"> 
+														<div ng-show="environment.version != 'Unavailable'">
 															Version: {{environment.version}}
-															<div ng-show="environment.version != 'Unavailable' && component.environments[0].lastVersion != 'No known last version'" class="last-version-text">{{component.environments[0].lastVersion - environment.version}} versions from {{component.environments[0].name}}</div>
-															<div ng-show="component.environments[0].lastVersion < environment.version  && component.environments[0].lastVersion != 'No known last version'" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
-															<div ng-hide="environment.lastVersion == 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+															<div ng-show="environment.version != 'Unavailable'" class="last-version-text">{{component.environments[0].lastVersion - environment.version}} versions from {{component.environments[0].name}}</div>
+															<div ng-show="component.environments[0].lastVersion < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+															<div ng-hide="environment.lastVersion == 'No known last version' || environment.lastVersion == environment.version" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 														</div>
 														<!-- current version is unavailable, but last verion is available -->
-														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'"> 
-															Last Version: {{environment.lastVersion}}
-															<div ng-show="component.environments[0].lastVersion != 'No known last version'" class="last-version-text">{{component.environments[0].lastVersion - environment.lastVersion}} versions from {{component.environments[0].name}}</div>
-															<div ng-show="component.environments[0].lastVersion < environment.version && component.environments[0].lastVersion != 'No known last version'" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'">
+															Previous version: {{environment.lastVersion}}
+															<div class="last-version-text">{{component.environments[0].lastVersion - environment.lastVersion}} versions from {{component.environments[0].name}}</div>
+															<div ng-show="component.environments[0].lastVersion < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 														</div>
 														<!-- if neither are available, there should be an error -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'">
 															Error: Unable to retrieve version information
 															<div class="last-version-text">This should never be visible</div>
-														</div> 
+														</div>
 													</div>
-
-
 													<!-- there is an error -->
 													<div ng-show="environment.error != ''">
 														<div class="error-text">Error: {{environment.error}}</div>
 														<div ng-show="environment.version != 'Unavailable'" class="last-version-text">Version: {{environment.version}}</div>
-														<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+														<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 													</div>
-
+												</div>
+											</div>
+										</div>
+										<!-- CI is not available -->
+										<div ng-show="component.environments[0].version == 'Unavailable' && component.environments[0].lastVersion == 'No known last version'">
+											<div class="col-md-{{gridColumns}} component-box inaccessable">
+												<div class="component-box-inner">
+													<!-- there are no errors -->
+													<div ng-show="environment.error == ''" class="version-text">
+														<!-- current version is available -->
+														<div ng-show="environment.version != 'Unavailable'">
+															Version: {{environment.version}}
+															<div ng-hide="environment.lastVersion == 'No known last version' || environment.lastVersion == environment.version" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
+														</div>
+														<!-- current version is unavailable, but last verion is available -->
+														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'">
+															Previous version: {{environment.lastVersion}}
+														</div>
+														<!-- if neither are available, there should be an error -->
+														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'">
+															Error: Unable to retrieve version information
+															<div class="last-version-text">This should never be visible</div>
+														</div>
+													</div>
+													<!-- there is an error -->
+													<div ng-show="environment.error != ''">
+														<div class="error-text">Error: {{environment.error}}</div>
+														<div ng-show="environment.version != 'Unavailable'" class="last-version-text">Version: {{environment.version}}</div>
+														<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -135,15 +160,15 @@
 													<!-- there are no errors -->
 													<div ng-show="environment.error == ''" class="version-text">
 														<!-- current version is available -->
-														<div ng-show="environment.version != 'Unavailable'"> 
+														<div ng-show="environment.version != 'Unavailable'">
 															Version: {{environment.version}}
 															<div ng-hide="environment.version == 'Unavailable'" class="last-version-text">{{component.environments[0].version - environment.version}} versions from {{component.environments[0].name}}</div>
 															<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
-															<div ng-hide="environment.lastVersion == 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+															<div ng-hide="environment.lastVersion == 'No known last version' || environment.lastVersion == environment.version" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 														</div>
 														<!-- current version is unavailable, but last verion is available -->
-														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'"> 
-															Last Version: {{environment.lastVersion}}
+														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'">
+															Previous version: {{environment.lastVersion}}
 															<div class="last-version-text">{{component.environments[0].version - environment.lastVersion}} versions from {{component.environments[0].name}}</div>
 															<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 														</div>
@@ -151,14 +176,13 @@
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'">
 															Error: Unable to retrieve version information
 															<div class="last-version-text">This should never be visible</div>
-														</div> 
+														</div>
 													</div>
-
 													<!-- there is an error -->
 													<div ng-show="environment.error != ''">
 														<div class="error-text">Error: {{environment.error}}</div>
 														<div ng-show="environment.version != 'Unavailable'" class="last-version-text">Version: {{environment.version}}</div>
-														<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Last version: {{environment.lastVersion}}</div>
+														<div ng-show="environment.lastVersion != 'No known last version'" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 													</div>
 												</div>
 											</div>
@@ -167,22 +191,24 @@
 								</div>
 							</div>
 						</div>
-						  
+						<div class="footer">
+							© Crowdmix Ltd. 2016
+						</div>
+						
 						<modal title="{{gitDiffTitle}}" visible="showModal">
-							<div ng-show="loading">Loading...</div>
-							<div ng-show="!loading && (angular.isUndefined(collectedCommits) || collectedCommits == [])">
-								There was an error retrieving the commit log.
-							</div>
-							<div ng-repeat="commit in collectedCommits track by $index">
-								<div ng-show="commit.error" class="commit-error-message">Error: {{commit.error}}</div>
-								<div ng-show="!commit.error">
+						<div ng-show="loading">Loading...</div>
+						<div ng-show="!loading && (angular.isUndefined(collectedCommits) || collectedCommits == [])">
+							There was an error retrieving the commit log.
+						</div>
+						<div ng-repeat="commit in collectedCommits track by $index">
+							<div ng-show="commit.error" class="commit-error-message">Error: {{commit.error}}</div>
+							<div ng-show="!commit.error">
 								<div>Author: {{commit.author}}</div>
-									<div class="last-version-text">Commit ID: {{commit.id}}</div>
-									<div class="commit-message-text">Message: {{commit.message}}</div>
-								</div>
+								<div class="last-version-text">Commit ID: {{commit.id}}</div>
+								<div class="commit-message-text">Message: {{commit.message}}</div>
 							</div>
+						</div>
 						</modal>
-
 					</div>
 				</div>
 			</div>

@@ -70,15 +70,17 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 module.directive('modal', function () {
     return {
       	template: '<div class="modal fade">' + 
-		      	    '<div ng-click="" class="modal-dialog">' + 
-		      	        '<div class="modal-content">' + 
-		      	            '<div class="modal-header">' + 
-                				'<button ng-click="toggleModal()" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                				'<h4 class="modal-title">{{ gitDiffTitle }}</h4>' + 
-              				'</div>' + 
-		                	'<div class="modal-body" ng-transclude></div>' + 
-		      	        '</div>' + 
-		      	    '</div>' + 
+                '<div class="container">' +
+		      	      '<div class="modal-dialog">' + 
+		      	          '<div class="modal-content">' + 
+		      	              '<div class="modal-header">' + 
+                   				'<button ng-click="toggleModal()" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
+                   				'<h4 class="modal-title">{{ gitDiffTitle }}</h4>' + 
+              	  			'</div>' + 
+		                   	'<div class="modal-body" ng-transclude></div>' + 
+		      	          '</div>' + 
+		      	      '</div>' + 
+                '</div>' +
 		      	'</div>',
       	restrict: 'E',
       	transclude: true,
