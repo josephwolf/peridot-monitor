@@ -196,18 +196,18 @@
 						</div>
 						
 						<modal title="{{gitDiffTitle}}" visible="showModal">
-						<div ng-show="loading">Loading...</div>
-						<div ng-show="!loading && (angular.isUndefined(collectedCommits) || collectedCommits == [])">
-							There was an error retrieving the commit log.
-						</div>
-						<div ng-repeat="commit in collectedCommits track by $index">
-							<div ng-show="commit.error" class="commit-error-message">Error: {{commit.error}}</div>
-							<div ng-show="!commit.error">
-								<div>Author: {{commit.author}}</div>
-								<div class="last-version-text">Commit ID: {{commit.id}}</div>
-								<div class="commit-message-text">Message: {{commit.message}}</div>
+							<div ng-show="loading">Loading...</div>
+							<div ng-show="!loading && (angular.isUndefined(collectedCommits) || collectedCommits == [])">
+								There was an error retrieving the commit log.
 							</div>
-						</div>
+							<div ng-repeat="commit in collectedCommits track by $index">
+								<div ng-show="commit.error" class="commit-error-message">Error: {{commit.error}}</div>
+								<div ng-show="!commit.error">
+									<div class="commit-info-text">Author: {{commit.author}}</div>
+									<div class="last-version-text commit-info-text">Commit ID: {{commit.id}}</div>
+									<div class="commit-message-text">Message: {{commit.message}}</div>
+								</div>
+							</div>
 						</modal>
 					</div>
 				</div>

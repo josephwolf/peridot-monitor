@@ -2,8 +2,9 @@ var express 	= require('express');
 var app 		= express();
 var port 		= 2501;
 var basicAuth 	= require('basic-auth')
+var peridotPassword	= process.env.PERIDOT_PASSWORD
 
-app.use(auth('peridotaccess', 'XXXXXX'));
+app.use(auth('peridotaccess', peridotPassword));
 app.use(express.static(__dirname + '/public'));
 
 require('./app/routes.js')(app);
