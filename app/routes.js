@@ -4,6 +4,7 @@ module.exports = function(app) {
 	var multer = require('multer'); // v1.0.5
 	var path = require('path');
 	var request = require('request');
+	var peridotGithubToken = process.env.PERIDOT_GITHUB_TOKEN
 
 	var options = {
 		dotfiles: 'ignore',
@@ -29,8 +30,8 @@ module.exports = function(app) {
 		headers: {
 			'Content-Type':'application/json;charset=utf-8',
 			'Accept':'application/json',
-			'User-Agent': 'josephwolf',
-			'Authorization': 'CHANGEME'
+			'User-Agent': 'CrowdmixBot',
+			'Authorization': 'token ' + peridotGithubToken
 		}
 	}
 
