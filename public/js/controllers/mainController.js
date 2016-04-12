@@ -53,12 +53,31 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 		getEnrichedComponents()
 	};
 
+  var extractJirasTicketFromCommitMessages = function(commitData) {
+    var jiraTickets = []
+    var regExQuery = new RegExp(/\w+([A-Z])-\w+([0-9])/g)
+
+    angular.forEach(commitData, function(commit) {
+      if (regExQuery.test(commit.message)) { jiraTickets.unshift(commit.message.match(regExQuery)) }
+    })
+    var collectedJiraTickets = [].concat.apply([], jiraTickets)
+    var uniqueJiraTickets = []
+    $.each(collectedJiraTickets, function(i, el) {
+      if ($.inArray(el, uniqueJiraTickets) === -1) {uniqueJiraTickets.unshift(el)}
+    })
+    return uniqueJiraTickets;
+  }
+
 	$scope.getGitDiff = function(repoName, oldVersion, newVersion) {
 		$scope.loading = true
 		$scope.collectedCommits = []
 		$scope.gitDiffTitle = "Commits between " + repoName + " " + oldVersion + " and " + repoName + " " + newVersion
 		gitService.getCommitMessagesFromVersionRange(repoName, oldVersion, newVersion)
-		.then(function(commitMessages){ $scope.loading = false; $scope.collectedCommits = commitMessages })
+		.then(function(commitMessages){ 
+      $scope.loading = false; 
+      $scope.collectedCommits = commitMessages;
+      $scope.jiraTickets = extractJirasTicketFromCommitMessages(commitMessages);
+    })
 	}
 
 	getEnvironmentNames();

@@ -200,7 +200,16 @@
 							<div ng-show="!loading && (angular.isUndefined(collectedCommits) || collectedCommits == [])">
 								There was an error retrieving the commit log.
 							</div>
-							<p ng-show="!loading && collectedCommits != [] && !collectedCommits[0].error">Newer commits are at the top</p>
+							<div ng-show="!loading && jiraTickets != [] && !collectedCommits[0].error">
+								Associated Jira Tickets:
+								<div ng-repeat="ticket in jiraTickets">
+									<a href="https://jira.dev.crwd.mx/browse/{{ticket}}" target="#">{{ticket}}</a>
+								</div>
+							</div>
+							<div ng-show="!loading && collectedCommits != [] && !collectedCommits[0].error">
+								<p>__________________________________________________________________</p>
+								<p>Commit Log:</p>
+							</div>
 							<div ng-repeat="commit in collectedCommits track by $index">
 								<div ng-show="commit.error" class="commit-error-message">Error: {{commit.error}}</div>
 								<div ng-show="!commit.error">
