@@ -34,7 +34,7 @@
 				<div class="sidebar" sidebar-directive="state">
 					<a href="#" id="navigation-toggle" ng-click="toggleNavBar()">▶</a>
 					<ul class="navigation">
-						<img src="/resources/new_logo_lol.png" class="crowdmix-logo">
+						<img src="/resources/logo_big.png" class="crowdmix-logo">
 						<div ng-repeat="(checkboxName, checkboxValue) in checkboxes">
 							<div class="col-md-12 component-checkbox">
 								<p>
@@ -82,7 +82,7 @@
 										<!-- CI is unavailable but CI last version is  available -->
 										<div ng-show="component.environments[0].version == 'Unavailable' && component.environments[0].lastVersion != 'No known last version'">
 											<div class="col-md-{{gridColumns}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].lastVersion); toggleModal()" ng-class="{
-												'inaccessable' : environment.error != '',
+												'inaccessable' : environment.error != '' || environment.version == 'Unavailable',
 												'okay' : (component.environments[0].lastVersion - environment.version) > 0,
 												'warning' : (component.environments[0].lastVersion - environment.version) > 2,
 												'bad' : (component.environments[0].lastVersion - environment.version) > 4,
@@ -97,7 +97,7 @@
 															<div ng-show="component.environments[0].lastVersion < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 															<div ng-hide="environment.lastVersion == 'No known last version' || environment.lastVersion == environment.version" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 														</div>
-														<!-- current version is unavailable, but last verion is available -->
+														<!-- current version is unavailable, but last version is available -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'">
 															Previous version: {{environment.lastVersion}}
 															<div class="last-version-text">{{component.environments[0].lastVersion - environment.lastVersion}} versions from {{component.environments[0].name}}</div>
@@ -151,7 +151,7 @@
 										<!-- CI is available -->
 										<div ng-show="component.environments[0].version != 'Unavailable'">
 											<div class="col-md-{{gridColumns}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].version); toggleModal()" ng-class="{
-												'inaccessable' : environment.error != '' || component.environments[0].version == 'Unavailable',
+												'inaccessable' : environment.error != '' || environment.version == 'Unavailable',
 												'okay' : (component.environments[0].version - environment.version) > 0,
 												'warning' : (component.environments[0].version - environment.version) > 2,
 												'bad' : (component.environments[0].version - environment.version) > 4,
@@ -170,7 +170,7 @@
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'">
 															Previous version: {{environment.lastVersion}}
 															<div class="last-version-text">{{component.environments[0].version - environment.lastVersion}} versions from {{component.environments[0].name}}</div>
-															<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+															<div ng-show="component.environments[0].version < environment.lastVersion" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 														</div>
 														<!-- if neither are available, there should be an error -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'">
@@ -200,6 +200,7 @@
 							<div ng-show="!loading && (angular.isUndefined(collectedCommits) || collectedCommits == [])">
 								There was an error retrieving the commit log.
 							</div>
+							<p ng-show="!loading && collectedCommits != [] && !collectedCommits[0].error">Newer commits are at the top</p>
 							<div ng-repeat="commit in collectedCommits track by $index">
 								<div ng-show="commit.error" class="commit-error-message">Error: {{commit.error}}</div>
 								<div ng-show="!commit.error">

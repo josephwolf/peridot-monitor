@@ -8,7 +8,7 @@ module.exports = function(app) {
 
 	var options = {
 		dotfiles: 'ignore',
-		root: "/src/public/", //change to "./public/" for local version
+		root: "/src/public/",
 		headers: {
 			'x-timestamp': Date.now(),
 			'x-sent': true,
@@ -46,7 +46,7 @@ module.exports = function(app) {
 					  {"name": "accounts-processor", 				"repo": "accounts"},
 					  {"name": "authentication", 					"repo": "authentication"},
 					  {"name": "content-sharing", 					"repo": "content-sharing"},
-					  {"name": "external-moderation-processor", 	"repo": "external-moderation"},
+					  {"name": "external-moderation-inbound", 		"repo": "external-moderation"},
 					  {"name": "external-moderation-outbound", 		"repo": "external-moderation"},
 					  {"name": "feeds", 							"repo": "feeds"},
 					  {"name": "invitations", 						"repo": "invitations"},
@@ -57,13 +57,10 @@ module.exports = function(app) {
 					  {"name": "matching", 							"repo": "matching"},
 					  {"name": "media-access", 						"repo": "media-access"},
 					  {"name": "moderation", 						"repo": "moderation"},
-					  {"name": "moderation-processor", 				"repo": "moderation"},
 					  {"name": "music-search", 						"repo": "matching"},
 					  {"name": "notifications-read", 				"repo": "notifications"},
 					  {"name": "notifications-view-materializer", 	"repo": "notifications"},
 	                  {"name": "profiles", 							"repo": "profiles"},
-					  {"name": "recent-listens-read", 				"repo": "recent-listens"},
-					  {"name": "recent-listens-view-materializer", 	"repo": "recent-listens"},
 					  {"name": "recommendations", 					"repo": "recommendations"},
 					  {"name": "search", 							"repo": "search"},
 					  {"name": "sms-gateway",						"repo": "sms-gateway"},
@@ -92,7 +89,7 @@ module.exports = function(app) {
 
 	var getVersion = function(environment, componentName) {
 		if (environment == "Production") { httpsOptions.host = 'api.crwd.mx' } 
-		else { httpsOptions.host = environment + '.dev.crwd.mx' }
+		else { httpsOptions.host = 'api.' + environment + '.crwd.mx' }
 		httpsOptions.path = '/' + componentName + '/meta'
 
 		var request = https.request(httpsOptions, function(response) {
@@ -171,8 +168,8 @@ module.exports = function(app) {
 		})
 	}
 
-	var getGithubRepoCommitData = function(repoName, res) {
-		githubHttpsOptions.url = 'https://api.github.com/repos/crowdmix/' + repoName + '/commits?sha=master'
+	var getGithubRepoCommitData = function(repoName, page, res) {
+		githubHttpsOptions.url = 'https://api.github.com/repos/crowdmix/' + repoName + '/commits?sha=master&page=' + page
 
 		request(githubHttpsOptions, function (error, response, body) { 
 			if (error == null && response.statusCode == 200) { res.send(body) } 
@@ -220,7 +217,7 @@ module.exports = function(app) {
 	})
 
 	app.post('/commitdata', function(req, res) {
-		getGithubRepoCommitData(req.body.repoName, res)
+		getGithubRepoCommitData(req.body.repoName, req.body.page, res)
 	})
 
 	app.post('/tagcommitdata', function(req, res) {
