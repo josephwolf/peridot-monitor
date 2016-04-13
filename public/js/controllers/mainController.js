@@ -17,8 +17,19 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
     $scope.checkboxes = {};
     $scope.showModal = false;
     $scope.toggleModal = function(){ $scope.showModal = !$scope.showModal; };
-    $scope.collectedCommits = []
-    $scope.loading = false
+    $scope.collectedCommits = [];
+    $scope.environments = [];
+    $scope.environmentCheckboxes = {};
+    $scope.loading = false;
+
+    $scope.columnSize = 2
+    // function() {
+    //   var noOfVisibleEnvs = 0;
+    //   angular.forEach($scope.environmentCheckboxes, function(result) {
+    //     if (result == true) noOfVisibleEnvs++;
+    //   })
+    //   return 12 / noofVisibleEnvs;
+    // };
 
 
     var constructComponentCheckboxes = function() {
@@ -27,12 +38,21 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
     	})
     }
 
-	var getEnvironmentNames = function() {
+    var constructEnvironmentCheckboxes = function() {
+      angular.forEach($scope.environments, function(environment) {
+        $scope.environmentCheckboxes[environment.toString()] = true
+      })
+    }
+
+	var getEnvironments = function() {
 		return $http.get('/environments')
 			.then(function(response) {
-				$scope.environmentNames = response.data;
-				$scope.gridColumns = Math.floor(12 / ($scope.environmentNames.length + 1));
-			});
+				$scope.environments = response.data;
+			})
+      .then(function(){
+       if (jQuery.isEmptyObject($scope.environmentCheckboxes)) {
+        constructEnvironmentCheckboxes()}
+      });
 	}
 
 	var getComponents = function() {
@@ -61,7 +81,7 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 		.then(function(commitMessages){ $scope.loading = false; $scope.collectedCommits = commitMessages })
 	}
 
-	getEnvironmentNames();
+	getEnvironments();
 	getComponents();
 	getEnrichedComponents();
 	$interval(refreshComponents, 10000);
