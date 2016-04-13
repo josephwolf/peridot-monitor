@@ -89,7 +89,7 @@ module.exports = function(app) {
 
 	var getVersion = function(environment, componentName) {
 		if (environment == "Production") { httpsOptions.host = 'api.crwd.mx' } 
-		else { httpsOptions.host = 'api.' + environment + '.crwd.mx' }
+		else { httpsOptions.host = 'api.' + environment.toLowerCase() + '.crwd.mx' }
 		httpsOptions.path = '/' + componentName + '/meta'
 
 		var request = https.request(httpsOptions, function(response) {
