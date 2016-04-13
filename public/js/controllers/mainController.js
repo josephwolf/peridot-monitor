@@ -22,15 +22,19 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
     $scope.environmentCheckboxes = {};
     $scope.loading = false;
 
-    $scope.columnSize = 2
-    // function() {
-    //   var noOfVisibleEnvs = 0;
-    //   angular.forEach($scope.environmentCheckboxes, function(result) {
-    //     if (result == true) noOfVisibleEnvs++;
-    //   })
-    //   return 12 / noofVisibleEnvs;
-    // };
-
+    $scope.columnSize = function() {
+      var noOfVisibleEnvs = 0;
+      angular.forEach($scope.environmentCheckboxes, function(result) {
+        if (result == true) noOfVisibleEnvs++;
+      })
+      
+      switch(noOfVisibleEnvs) {
+        case 1: return 10;
+        case 2: return 5;
+        case 3: return 3;
+        default: return 2;
+      }
+    };
 
     var constructComponentCheckboxes = function() {
     	angular.forEach($scope.components, function(component) {

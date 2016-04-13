@@ -61,21 +61,21 @@
 			<div class="main-view container-fluid">
 				<div id="wrapper">
 					<nav>
-						<div class="col-md-{{columnSize}} environment-name-box">Component</div> <!-- Upper left corner of rid -->
+						<div class="col-md-2 environment-name-box">Component</div> <!-- Upper left corner of rid -->
 						<div ng-repeat="environment in environments">
-							<div class="col-md-{{columnSize}} environment-name-box" ng-show="environmentCheckboxes[''+environment]">{{environment}}</div>
+							<div class="col-md-{{columnSize()}} environment-name-box" ng-show="environmentCheckboxes[''+environment]">{{environment}}</div>
 						</div>
 					</nav>
 					
 					<div id="content">
 						<div ng-repeat="component in enrichedComponents track by $index">
 							<div ng-show="checkboxes[''+component.name]" class="col-md-12">
-								<div class="col-md-{{columnSize}} component-name-box component-box"><div class="component-name-text">{{component.name}}</div></div>
+								<div class="col-md-2 component-name-box component-box"><div class="component-name-text">{{component.name}}</div></div>
 								<div ng-repeat="environment in component.environments">
 									
 									<!-- CI build -->
 									<div ng-show="component.environments[0].name == environment.name && environmentCheckboxes[''+environment.name]">
-										<div class="col-md-{{columnSize}} component-box good" ng-class="{
+										<div class="col-md-{{columnSize()}} component-box good" ng-class="{
 											'inaccessable' : environment.error != '',
 											'critical' : environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'}">
 											<div class="component-box-inner">
@@ -93,7 +93,7 @@
 									<div ng-show="component.environments[0].name != environment.name && environmentCheckboxes[''+environment.name]">
 										<!-- CI is unavailable but CI last version is  available -->
 										<div ng-show="component.environments[0].version == 'Unavailable' && component.environments[0].lastVersion != 'No known last version'">
-											<div class="col-md-{{columnSize}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].lastVersion); toggleModal()" ng-class="{
+											<div class="col-md-{{columnSize()}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].lastVersion); toggleModal()" ng-class="{
 												'inaccessable' : environment.error != '' || environment.version == 'Unavailable',
 												'okay' : (component.environments[0].lastVersion - environment.version) > 0,
 												'warning' : (component.environments[0].lastVersion - environment.version) > 2,
@@ -132,7 +132,7 @@
 										</div>
 										<!-- CI is not available -->
 										<div ng-show="component.environments[0].version == 'Unavailable' && component.environments[0].lastVersion == 'No known last version'">
-											<div class="col-md-{{columnSize}} component-box inaccessable">
+											<div class="col-md-{{columnSize()}} component-box inaccessable">
 												<div class="component-box-inner">
 													<!-- there are no errors -->
 													<div ng-show="environment.error == ''" class="version-text">
@@ -162,7 +162,7 @@
 										</div>
 										<!-- CI is available -->
 										<div ng-show="component.environments[0].version != 'Unavailable'">
-											<div class="col-md-{{columnSize}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].version); toggleModal()" ng-class="{
+											<div class="col-md-{{columnSize()}} component-box good" ng-click="getGitDiff(component.repo, environment.version, component.environments[0].version); toggleModal()" ng-class="{
 												'inaccessable' : environment.error != '' || environment.version == 'Unavailable',
 												'okay' : (component.environments[0].version - environment.version) > 0,
 												'warning' : (component.environments[0].version - environment.version) > 2,
