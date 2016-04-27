@@ -15,19 +15,6 @@ module.exports = function(app) {
 		}
 	}
 
-
-	var githubHttpsRawOptions = {
-		url: 'https://raw.githubusercontent.com/Crowdmix/iosapp/dev/Configs/FeatureFlags.json',
-		method: 'GET',
-		port: 443,
-		headers: {
-			'Content-Type':'application/json;charset=utf-8',
-			'Accept':'application/json',
-			'User-Agent': 'CrowdmixBot',
-			'Authorization': 'token ' + peridotGithubToken
-		}
-	}
-
 	var httpsOptions = {
 		method: 'GET',
 		port: 443,
@@ -199,8 +186,10 @@ module.exports = function(app) {
 		})
 	}
 
-	var getIosFlagDataFromGithub = function(res) {
-		request(githubHttpsRawOptions, function(error, response, body) {
+	var getIosFlagDataFromGithub = function(tree, res) {
+		githubHttpsOptions.url = 'https://raw.githubusercontent.com/Crowdmix/iosapp/' + tree + '/Configs/FeatureFlags.json',
+
+		request(githubHttpsOptions, function(error, response, body) {
 			if (error == null && response.statusCode == 200) { res.send(body) } 
 			else { res.send( console.log(error))} 
 		})
@@ -223,8 +212,8 @@ module.exports = function(app) {
     	});
 	});
 
-	app.get('/iosflagdata', function(req, res) {
-		getIosFlagDataFromGithub(res)
+	app.post('/iosflagdata', function(req, res) {
+		getIosFlagDataFromGithub(req.body.treeName, res)
 	})
 
 	app.get('/componentnames', function(req, res) {

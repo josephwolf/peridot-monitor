@@ -25,41 +25,61 @@
 		<script src="/js/core.js"></script> <!-- load our main application -->
 		<script src="/js/controllers/iosController.js"></script> <!-- load up our controller -->
 		<script src="/js/controllers/sidebarController.js"></script>
+		<script src="/js/Services/gitService.js"></script>
 	</head>
 	
 	<body ng-controller="iosController" ng-cloak>
 		<div ng-controller="sidebarController">
+
 			<div class="container-fluid">
 				<div class="sidebar" sidebar-directive="state">
 					<a href="#" id="navigation-toggle" ng-click="toggleNavBar()">▶</a>
 					<ul class="navigation">
 						<img src="/resources/logo_big.png" class="crowdmix-logo">
-						<p>boo :o</p>
+						<h3>Feature Flag Monitor</h3>
+						<div ng-repeat="tree in iosVersionTrees">
+							<div class="app-version-box">
+								<div ng-click="getNewIosFlagData(tree.treeName)">Version: {{tree.displayName}}</div>	
+							</div>
+						</div>
 					</ul>
 				</div>
 			</div>
+
 			<div class="main-view container-fluid">
 				<div id="wrapper">
 					<nav>
+						<div class="col-md-12">
+							<div class="col-md-6 environment-name-box">
+								<p>Feature Flag</p>
+							</div>
+							<div class="col-md-2 environment-name-box">CI</div>
+							<div class="col-md-2 environment-name-box">QA</div>
+							<div class="col-md-2 environment-name-box">PROD</div>
+						</div>
 					</nav>
 					
 					<div id="content">
-						<h1>IOS FLAG DATA</h1>
-						<p>Displaying info for most recent version</p>
 						<div ng-repeat="flag in iosFlagData">
 							<div class="col-md-12">
-								<div class="col-md-3 component-box">
-									<div>NAME: {{flag.name}}</div>
+								<div class="col-md-6 feature-flag-name-box">
+									<div class="feature-flag-name">{{flag.name}}</div>
 									<div>DESCRIPTION: {{flag.desc}}</div>
 								</div>
-								<div class="col-md-3 component-box" ng-class="{'good' : flag.CI, 'critical' : !flag.CI}">CI</div>
-								<div class="col-md-3 component-box" ng-class="{'good' : flag.QA, 'critical' : !flag.QA}">QA</div>
-								<div class="col-md-3 component-box" ng-class="{'good' : flag.PROD, 'critical' : !flag.PROD}">PROD</div>
+								<div class="col-md-2 feature-flag-box good" ng-show="flag.CI">✓</div>
+								<div class="col-md-2 feature-flag-box critical" ng-show="!flag.CI">✗</div>
+								<div class="col-md-2 feature-flag-box good" ng-show="flag.QA">✓</div>
+								<div class="col-md-2 feature-flag-box critical" ng-show="!flag.QA">✗</div>
+								<div class="col-md-2 feature-flag-box good" ng-show="flag.PROD">✓</div>
+								<div class="col-md-2 feature-flag-box critical" ng-show="!flag.PROD">✗</div>							
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="footer">
+			© Crowdmix Ltd. 2016
 		</div>
 	</body>
 </html>

@@ -256,3 +256,38 @@ h1 {
 	color: #5E5E69;
 	margin-bottom: 20pt;
 }
+
+.feature-flag-box {
+	font-size: 40pt;
+	height: 40pt;
+	border: 3px #2F3030 solid;
+	height: 60pt;
+	border-radius: 5px;
+	text-align: center;
+	overflow: hidden;
+}
+
+.feature-flag-name-box {
+	font-size: 15pt;
+	border: 3px #2F3030 solid;
+	height: 65pt;
+	text-align: center;
+	overflow: hidden;
+}
+
+.feature-flag-name {
+	font-size: 20pt;
+	padding-bottom: 10pt;
+}
+
+.app-version-box {
+	cursor: pointer;
+	color: #2F3030;
+	font-size: 16pt;
+	line-height: 32pt;
+	bottom: 16pt;
+	background-color: #D7DBDE;
+	border: 3px #616363 solid;
+	border-radius: 5px;
+	text-align: center;
+}
