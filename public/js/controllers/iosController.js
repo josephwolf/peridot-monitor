@@ -49,7 +49,7 @@ module.controller('iosController', ['$scope', '$q', '$http', function($scope, $q
 
   var getIosFlagData = function(versionName) {
     return $http.post('/iosflagdata', { versionName })
-      .then(function(response) { $scope.iosFlagData = response.data; })
+      .then(function(response) { $scope.iosFlagData = response.data.reverse() })
   }
 
   var getIosTagData = function(){
