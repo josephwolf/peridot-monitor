@@ -35,11 +35,26 @@
 				<div class="sidebar" sidebar-directive="state">
 					<a href="#" id="navigation-toggle" ng-click="toggleNavBar()">▶</a>
 					<ul class="navigation">
-						<img src="/resources/logo_big.png" class="crowdmix-logo">
+						<a href="./"><img src="/resources/logo_big.png" class="crowdmix-logo"></a>
 						<h3>Feature Flag Monitor</h3>
-						<div ng-repeat="tree in iosVersionTrees">
+
+						<h4>Current version: {{currentIosAppVersion.versionName}}</h4>
+
+						<div class="dropdown dropdown-environment-box">
+						    <button class="btn btn-primary dropdown-toggle dropdown-environment-box-inner" type="button" data-toggle="dropdown">Select iOS app environment
+						    <span class="caret"></span></button>
+						    <ul class="dropdown-menu dropdown-menu-outer">
+						    	<div ng-repeat="environment in iosEnvironments">
+						    		<li class="dropdown-items" ng-show="currentIosAppEnvironment.environmentName == environment.environmentName" ng-click="changeEnvironment(environment)">▶ {{environment.environmentName}}</li>
+						    		<li class="dropdown-items" ng-show="currentIosAppEnvironment.environmentName != environment.environmentName" ng-click="changeEnvironment(environment)">{{environment.environmentName}}</li>
+						    	</div>
+						    </ul>
+						</div>
+
+						<div ng-repeat="version in currentIosAppEnvironment.data">
 							<div class="app-version-box">
-								<div ng-click="getNewIosFlagData(tree.treeName)">Version: {{tree.displayName}}</div>	
+								<div ng-show="currentIosAppVersion.versionName == version.versionName" ng-click="getNewIosFlagData(version)">▶ Version: {{version.displayName}}</div>	
+								<div ng-show="currentIosAppVersion.versionName != version.versionName" ng-click="getNewIosFlagData(version)">Version: {{version.displayName}}</div>	
 							</div>
 						</div>
 					</ul>

@@ -34,7 +34,7 @@
 				<div class="sidebar" sidebar-directive="state">
 					<a href="#" id="navigation-toggle" ng-click="toggleNavBar()">▶</a>
 					<ul class="navigation">
-						<img src="/resources/logo_big.png" class="crowdmix-logo">
+						<a href="./ios"><img src="/resources/logo_big.png" class="crowdmix-logo"></a>
 						<h3>Component Version Monitor</h3>
 
 						<!-- Environment Checkboxes -->
@@ -107,19 +107,18 @@
 														<div ng-show="environment.version != 'Unavailable'">
 															Version: {{environment.version}}
 															<div ng-show="environment.version != 'Unavailable'" class="last-version-text">{{component.environments[0].lastVersion - environment.version}} versions from {{component.environments[0].name}}</div>
-															<div ng-show="component.environments[0].lastVersion < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+															<div ng-show="component.environments[0].lastVersion - environment.version < 0" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 															<div ng-hide="environment.lastVersion == 'No known last version' || environment.lastVersion == environment.version" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 														</div>
 														<!-- current version is unavailable, but last version is available -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'">
 															Previous version: {{environment.lastVersion}}
 															<div class="last-version-text">{{component.environments[0].lastVersion - environment.lastVersion}} versions from {{component.environments[0].name}}</div>
-															<div ng-show="component.environments[0].lastVersion < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+															<div ng-show="component.environments[0].lastVersion - environment.version < 0" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 														</div>
 														<!-- if neither are available, there should be an error -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'">
-															Error: Unable to retrieve version information
-															<div class="last-version-text">This should never be visible</div>
+															<div class="error-text">Error: Unable to retrieve version information</div>
 														</div>
 													</div>
 													<!-- there is an error -->
@@ -148,8 +147,7 @@
 														</div>
 														<!-- if neither are available, there should be an error -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'">
-															Error: Unable to retrieve version information
-															<div class="last-version-text">This should never be visible</div>
+															<div class="error-text">Error: Unable to retrieve version information</div>
 														</div>
 													</div>
 													<!-- there is an error -->
@@ -176,19 +174,18 @@
 														<div ng-show="environment.version != 'Unavailable'">
 															Version: {{environment.version}}
 															<div ng-hide="environment.version == 'Unavailable'" class="last-version-text">{{component.environments[0].version - environment.version}} versions from {{component.environments[0].name}}</div>
-															<div ng-show="component.environments[0].version < environment.version" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+															<div ng-show="component.environments[0].version - environment.version < 0" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 															<div ng-hide="environment.lastVersion == 'No known last version' || environment.lastVersion == environment.version" class="last-version-text">Previous version: {{environment.lastVersion}}</div>
 														</div>
 														<!-- current version is unavailable, but last verion is available -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion != 'No known last version'">
 															Previous version: {{environment.lastVersion}}
 															<div class="last-version-text">{{component.environments[0].version - environment.lastVersion}} versions from {{component.environments[0].name}}</div>
-															<div ng-show="component.environments[0].version < environment.lastVersion" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
+															<div ng-show="component.environments[0].version - environment.lastVersion < 0" class="warning-text">WARNING: ENVIRONMENT IS AHEAD OF CI</div>
 														</div>
 														<!-- if neither are available, there should be an error -->
 														<div ng-show="environment.version == 'Unavailable' && environment.lastVersion == 'No known last version'">
-															Error: Unable to retrieve version information
-															<div class="last-version-text">This should never be visible</div>
+															<div class="error-text">Error: Unable to retrieve version information</div>
 														</div>
 													</div>
 													<!-- there is an error -->

@@ -291,3 +291,28 @@ h1 {
 	border-radius: 5px;
 	text-align: center;
 }
+
+.dropdown-environment-box {
+	padding: 4pt;
+	margin: 0 8pt 0;
+}
+
+.dropdown-environment-box-inner {
+	font-size: 16pt;
+}
+
+.dropdown-menu-outer {
+	margin: -4pt 6pt 0;
+	padding-left: 10pt;
+}
+.dropdown-items {
+	color: #2F3030;
+	margin-bottom: 4pt;
+	font-size: 26px;
+}
+
+#navigation-toggle {
+	margin-top: 60pt;
+    padding: 12px 12px 12px 55px;
+    font-size: 15pt;
+}

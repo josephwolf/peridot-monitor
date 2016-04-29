@@ -36,7 +36,7 @@ module.exports = function(app) {
 	}
 
 	var environmentNames = ["CI",
-							"Performance",
+							"Sectest",
 							"QA",
 							"Staging",
 							"Production"]
@@ -45,7 +45,6 @@ module.exports = function(app) {
 					  {"name": "accounts", 							"repo": "accounts"},
 					  {"name": "accounts-processor", 				"repo": "accounts"},
 					  {"name": "authentication", 					"repo": "authentication"},
-					  {"name": "content-sharing", 					"repo": "content-sharing"},
 					  {"name": "external-moderation-inbound", 		"repo": "external-moderation"},
 					  {"name": "external-moderation-outbound", 		"repo": "external-moderation"},
 					  {"name": "feeds", 							"repo": "feeds"},
@@ -88,9 +87,15 @@ module.exports = function(app) {
 	}
 
 	var getVersion = function(environment, componentName) {
-		if (environment == "Production") { httpsOptions.host = 'api.crwd.mx' } 
-		else { httpsOptions.host = 'api.' + environment.toLowerCase() + '.crwd.mx' }
-		httpsOptions.path = '/' + componentName + '/meta'
+		if (componentName == "external-moderation-inbound") {
+			if (environment != 'Production') { httpsOptions.host = 'thirdparty.' + environment.toLowerCase() + '.crwd.mx' }
+			else { httpsOptions.host = 'thirdparty.crwd.mx' }
+			httpsOptions.path = '/crisp/meta'
+		} else {
+			if (environment == "Production") { httpsOptions.host = 'api.crwd.mx' } 
+			else { httpsOptions.host = 'origin-api.' + environment.toLowerCase() + '.crwd.mx' }
+					httpsOptions.path = '/' + componentName + '/meta'
+		}
 
 		var request = https.request(httpsOptions, function(response) {
 			var bodyChunks = [];
@@ -126,7 +131,7 @@ module.exports = function(app) {
 		})
 	
 		request.end();
-		request.on('error', function(e) {console.error(e)});
+		request.on('error', function(e) { console.log(e) });
 	}
 
 	var enrichComponent = function(component) {
@@ -186,8 +191,8 @@ module.exports = function(app) {
 		})
 	}
 
-	var getIosFlagDataFromGithub = function(tree, res) {
-		githubHttpsOptions.url = 'https://raw.githubusercontent.com/Crowdmix/iosapp/' + tree + '/Configs/FeatureFlags.json',
+	var getIosFlagDataFromGithub = function(version, res) {
+		githubHttpsOptions.url = 'https://raw.githubusercontent.com/Crowdmix/iosapp/' + version + '/Configs/FeatureFlags.json',
 
 		request(githubHttpsOptions, function(error, response, body) {
 			if (error == null && response.statusCode == 200) { res.send(body) } 
@@ -213,7 +218,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/iosflagdata', function(req, res) {
-		getIosFlagDataFromGithub(req.body.treeName, res)
+		getIosFlagDataFromGithub(req.body.versionName, res)
 	})
 
 	app.get('/componentnames', function(req, res) {
