@@ -85,5 +85,5 @@ module.controller('iosController', ['$scope', '$q', '$http', function($scope, $q
 
   getIosTagData()
   .then(function(tagData) { extractVersionsFromTagData(tagData) })
-  .then(function() { getIosFlagData($scope.iosEnvironments[0].data[0].versionName) })
+  .then(function() { getIosFlagData($scope.iosEnvironments[0].data[0].versionName); $scope.currentIosAppVersion = $scope.iosEnvironments[0].data[0] })
 }]);

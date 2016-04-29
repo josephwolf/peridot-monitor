@@ -92,7 +92,7 @@ module.exports = function(app) {
 			else { httpsOptions.host = 'thirdparty.crwd.mx' }
 			httpsOptions.path = '/crisp/meta'
 		} else {
-			if (environment == "Production") { httpsOptions.host = 'api.crwd.mx' } 
+			if (environment == "Production") { httpsOptions.host = 'origin-api.crwd.mx' } 
 			else { httpsOptions.host = 'origin-api.' + environment.toLowerCase() + '.crwd.mx' }
 					httpsOptions.path = '/' + componentName + '/meta'
 		}
