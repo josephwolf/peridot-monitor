@@ -1,6 +1,6 @@
-var module = angular.module('peridotController', ['gitservice'])
+var module = angular.module('peridotController', ['gitservice', 'ngCookies'])
 
-module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitService', function($scope, $q, $interval, $http, gitService) {
+module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitService', '$cookies', function($scope, $q, $interval, $http, gitService, $cookies) {
 
 	$(document).ready(function() {
     	var aboveHeight = $('header').outerHeight();
@@ -38,15 +38,29 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
     };
 
     var constructComponentCheckboxes = function() {
-    	angular.forEach($scope.components, function(component) {
-    		$scope.checkboxes[component.name.toString()] = true
-    	})
+      var checkboxesFromCookies = $cookies.get('componentCheckboxes')
+
+      if (checkboxesFromCookies == undefined) {
+        angular.forEach($scope.components, function(component) {
+          $scope.checkboxes[component.name.toString()] = true
+        })
+        $cookies.put('componentCheckboxes', JSON.stringify($scope.checkboxes));
+      } else {
+        $scope.checkboxes = JSON.parse(checkboxesFromCookies)
+      }
     }
 
     var constructEnvironmentCheckboxes = function() {
-      angular.forEach($scope.environments, function(environment) {
-        $scope.environmentCheckboxes[environment.toString()] = true
-      })
+      var environmentCheckboxesFromCookies = $cookies.get('environmentCheckboxes')
+
+      if (environmentCheckboxesFromCookies == undefined) {
+        angular.forEach($scope.environments, function(environment) {
+          $scope.environmentCheckboxes[environment.toString()] = true
+        })
+        $cookies.put('environmentCheckboxes', JSON.stringify($scope.environmentCheckboxes));
+      } else {
+        $scope.environmentCheckboxes = JSON.parse(environmentCheckboxesFromCookies)
+      }
     }
 
 	var getEnvironments = function() {
@@ -75,6 +89,8 @@ module.controller('mainController', ['$scope', '$q', '$interval', '$http', 'gitS
 
 	var refreshComponents = function() {
 		console.log("Refreshing components...")
+    $cookies.put('environmentCheckboxes', JSON.stringify($scope.environmentCheckboxes));
+    $cookies.put('componentCheckboxes', JSON.stringify($scope.checkboxes));
 		getEnrichedComponents()
 	};
 

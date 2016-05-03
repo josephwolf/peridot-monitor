@@ -36,9 +36,9 @@ module.exports = function(app) {
 	}
 
 	var environmentNames = ["CI",
-							"Sectest",
 							"QA",
 							"Staging",
+							"Sectest",
 							"Production"]
 
 	var components = [{"name": "abuse-reporting", 					"repo": "abuse-reporting"},
@@ -131,7 +131,7 @@ module.exports = function(app) {
 		})
 	
 		request.end();
-		request.on('error', function(e) { console.log(e) });
+		request.on('error', function(e) { console.error(e) });
 	}
 
 	var enrichComponent = function(component) {
