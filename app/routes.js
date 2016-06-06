@@ -37,8 +37,6 @@ module.exports = function(app) {
 
 	var environmentNames = ["CI",
 							"QA",
-							"Staging",
-							"Sectest",
 							"Production"]
 
 	var components = [{"name": "abuse-reporting", 					"repo": "abuse-reporting"},
